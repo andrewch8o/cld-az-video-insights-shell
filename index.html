@@ -181,7 +181,33 @@
    * returns (Object)                   -- jQuery object with the new UI element
    */
   function visualizeInsight(config) {
+    const insight = config.insight;
+    const label = insight[config.entity_label_field];
+    const insightConfidence = config.confidence_on_entity ? insight.confidence : null;
 
+    const insightContainer = $('<div class="entity-insight"></div>');
+    insightContainer.append(
+      $(`<div class="label">${label}</div>`));
+    for (let instance of insight.instances) {
+      const source = config.use_instance_source ? instance.instanceSource : null;
+      const instanceConfidence = insightConfidence ? insightConfidence : instance.confidence;
+      const instanceStartOffset = instance.start;
+
+      const confidenceLabel = (parseFloat(instanceConfidence)*100).toFixed(0) + '%';
+      let timestampContext = ['[🤔', confidenceLabel];
+      if (source) {
+        timestampContext.append(`, ${source}👀`);
+      }
+      timestampContext.append(']')
+      contextLabel = timestampContext.join('');
+
+      insightContainer.append(
+        $(`<div class="timestamp"><a href="#" onclick="setVideoPlayerCurrentTime('${instanceStartOffset}');return false;">${instanceStartOffset}</a>${contextLabel}</div>`,
+        document,
+        true // keepScripts
+      ));
+    }
+    return insightContainer;
   }
 </script>
 </body>
