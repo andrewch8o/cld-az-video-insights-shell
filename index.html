@@ -133,7 +133,17 @@
    * - timeOffsetLabel (string) -- time offset 'h:mm:ss.ff' from Video Indexer insights
    */
   function setVideoPlayerCurrentTime(timeOffsetLabel) {
+    const segm = timeOffsetLabel.split(':');
+    const h_offset = parseInt(segm[0]) * 3600;
+    const m_offset = parseInt(segm[1]) * 60;
+    const s_offset = parseFloat(segm[2]).toFixed(); // rounds fraction of a second
+    console.log(`h[${h_offset}];m[${m_offset}];s[${s_offset}]`);
 
+    const offsetSeconds= Number(h_offset) + Number(m_offset) + Number(s_offset);
+    console.log(`Setting video player current time [${timeOffsetLabel}] > [${offsetSeconds}]`);
+    __cld_video_player.currentTime(offsetSeconds);
+    __cld_video_player.play();  // Using play-pause for the offset to take effect 
+    __cld_video_player.pause(); //   when used for the first time (otherwise player stays on the thumbnail)
   }
 
 
