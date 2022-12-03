@@ -112,6 +112,25 @@
     const asset_data = await resp.json();
     console.log(`Done`);
   });
+
+  /**
+   * Translates Azure Video Indexer insights into UI (category > entity > time codes).
+   * UI events are used to manipulate Cloudinary Video Player instance on the page
+   * to navigate to each individual time code. 
+   *
+   * config structure:
+   * {
+   *   category_insights    : (Object)  -- Azure Video Indexer insights data for the category
+   *   entity_label_field   : (string)  -- field name to use as display name for each record from the insights
+   *   confidence_on_entity : (bool)    -- whether to read confidence value from entity or instances
+   *   use_instance_source  : (bool)    -- some entities may specify the source of the insight. Controls whether to read it
+   *   dest_ui_element_id   : (string)  -- id of the HTML element to translate the category insights into
+   *   cld_video_player     : (Object)  -- reference to the Cloudinary video player
+   * } 
+   */
+  function visualizeInsightsCategory(config) {
+    
+  }
 </script>
 </body>
 </html>
