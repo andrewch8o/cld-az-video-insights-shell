@@ -69,17 +69,17 @@
         </nav>
         <div class="tab-content" id="nav-tabContent">
           <div id="nav-ocr" role="tabpanel" class="tab-pane fade show active" 
-            aria-labelledby="nav-ocr-tab">ocr</div>
+            aria-labelledby="nav-ocr-tab"></div>
           <div id="nav-keywords" role="tabpanel" class="tab-pane fade" 
-            aria-labelledby="nav-keywords-tab">keywords</div>
+            aria-labelledby="nav-keywords-tab"></div>
           <div id="nav-topics" role="tabpanel" class="tab-pane fade" 
-            aria-labelledby="nav-topics-tab">topics</div>
+            aria-labelledby="nav-topics-tab"></div>
           <div id="nav-faces" role="tabpanel" class="tab-pane fade" 
-            aria-labelledby="nav-faces-tab">faces</div>
+            aria-labelledby="nav-faces-tab"></div>
           <div id="nav-labels" role="tabpanel" class="tab-pane fade" 
-            aria-labelledby="nav-labels-tab">labels</div>
+            aria-labelledby="nav-labels-tab"></div>
           <div id="nav-namedPeople" role="tabpanel" class="tab-pane fade" 
-            aria-labelledby="nav-namedPeople-tab">namedPeople</div>
+            aria-labelledby="nav-namedPeople-tab"></div>
         </div>        
       </div>
     </div>
@@ -124,6 +124,60 @@
     __cld_video_player = cloudinary.videoPlayer('cld-player', { cloud_name: cloud_name });
     __cld_video_player.source(asset_pubid);
     console.log('Done')
+
+    console.log('Adjusting height for the insights list area');
+    viewportHeight = window.innerHeight;
+    tabsNav = $('#insights-tabs');
+    topOffset = tabsNav.offset().top + tabsNav.height();
+    maxHeight = viewportHeight - topOffset - 10;
+    $('#nav-tabContent').css({"max-height": maxHeight, "overflow-y": "scroll"});
+    console.log('Done');
+
+    insights = asset_data.info.multiple.azure_video_indexer.data['en-US'];
+    console.log('Visualizing insights...');
+    visualizeInsightsCategory({
+      category_insights    : insights.ocr,
+      entity_label_field   : 'text',
+      confidence_on_entity : true,
+      use_instance_source  : false,
+      dest_ui_element_id   : 'nav-ocr'
+    });
+    visualizeInsightsCategory({
+      category_insights    : insights.keywords,
+      entity_label_field   : 'text',
+      confidence_on_entity : true,
+      use_instance_source  : false,
+      dest_ui_element_id   : 'nav-keywords'
+    });
+    visualizeInsightsCategory({
+      category_insights    : insights.topics,
+      entity_label_field   : 'name',
+      confidence_on_entity : true,
+      use_instance_source  : false,
+      dest_ui_element_id   : 'nav-topics'
+    });
+    visualizeInsightsCategory({
+      category_insights    : insights.faces,
+      entity_label_field   : 'name',
+      confidence_on_entity : true,
+      use_instance_source  : false,
+      dest_ui_element_id   : 'nav-faces'
+    });
+    visualizeInsightsCategory({
+      category_insights    : insights.labels,
+      entity_label_field   : 'name',
+      confidence_on_entity : false,
+      use_instance_source  : false,
+      dest_ui_element_id   : 'nav-labels'
+    });
+    visualizeInsightsCategory({
+      category_insights    : insights.namedPeople,
+      entity_label_field   : 'name',
+      confidence_on_entity : true,
+      use_instance_source  : true,
+      dest_ui_element_id   : 'nav-namedPeople'
+    });
+    console.log('Done');
   });
 
   /**
@@ -160,9 +214,17 @@
    *   dest_ui_element_id   : (string)  -- id of the HTML element to translate the category insights into
    * } 
    */
-
-
   function visualizeInsightsCategory(config) {
+    destUIContainer = $('#'+config.dest_ui_element_id);
+    for (const insight of config.category_insights) {
+      insightUI = visualizeInsight({
+        insight: insight,
+        entity_label_field   : config.entity_label_field,
+        confidence_on_entity : config.confidence_on_entity,
+        use_instance_source  : config.use_instance_source
+      });
+      destUIContainer.append(insightUI);
+    }
   }
 
   /**
