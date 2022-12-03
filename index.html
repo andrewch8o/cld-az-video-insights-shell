@@ -136,8 +136,7 @@
     const segm = timeOffsetLabel.split(':');
     const h_offset = parseInt(segm[0]) * 3600;
     const m_offset = parseInt(segm[1]) * 60;
-    const s_offset = parseFloat(segm[2]).toFixed(); // rounds fraction of a second
-    console.log(`h[${h_offset}];m[${m_offset}];s[${s_offset}]`);
+    const s_offset = parseFloat(segm[2]);
 
     const offsetSeconds= Number(h_offset) + Number(m_offset) + Number(s_offset);
     console.log(`Setting video player current time [${timeOffsetLabel}] > [${offsetSeconds}]`);
