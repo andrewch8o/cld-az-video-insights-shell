@@ -193,12 +193,12 @@
       const instanceConfidence = insightConfidence ? insightConfidence : instance.confidence;
       const instanceStartOffset = instance.start;
 
-      const confidenceLabel = (parseFloat(instanceConfidence)*100).toFixed(0) + '%';
+      const confidenceLabel = (parseFloat(instanceConfidence)*100).toFixed(1) + '%';
       let timestampContext = ['[🤔', confidenceLabel];
       if (source) {
-        timestampContext.append(`, ${source}👀`);
+        timestampContext.push(`, ${source}👀`);
       }
-      timestampContext.append(']')
+      timestampContext.push(']')
       contextLabel = timestampContext.join('');
 
       insightContainer.append(
