@@ -16,6 +16,7 @@
   <!-- CSS
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link href="https://unpkg.com/cloudinary-video-player@1.9.4/dist/cld-video-player.min.css" rel="stylesheet">
 </head>
 <body>
 
@@ -96,11 +97,15 @@
   integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" 
   crossorigin="anonymous">
 </script>
+<script src="https://unpkg.com/cloudinary-video-player@1.9.4/dist/cld-video-player.min.js" 
+  type="text/javascript"></script>
 <script>
   // Reading query string parameters via Proxy over URLSearchParams 
   const QsParams = new Proxy(new URLSearchParams(window.location.search), {
     get: (searchParams, prop) => searchParams.get(prop),
   });
+
+  __cld_video_player = null;
 
   $(document).ready(async function(){
     const cloud_name = QsParams.c;
@@ -111,6 +116,14 @@
     const resp = await fetch(asset_data_url);
     const asset_data = await resp.json();
     console.log(`Done`);
+
+    const asset_pubid = asset_data.public_id;
+    console.log(`Resolved video asset public id to '${asset_pubid}'`);
+
+    console.log('Initializing Cloudinary Video Player...');
+    __cld_video_player = cloudinary.videoPlayer('cld-player', { cloud_name: cloud_name });
+    __cld_video_player.source(asset_pubid);
+    console.log('Done')
   });
 
   /**
@@ -123,7 +136,7 @@
 
   }
 
-  
+
   /**
    * Translates Azure Video Indexer insights into UI (category > entity > time codes).
    * UI events are used to manipulate Cloudinary Video Player instance on the page
