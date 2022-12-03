@@ -32,26 +32,54 @@
           style="width:100%">
       </div>
       <div class="col-6">
-        <ul class="nav nav-tabs">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">ocr</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">keywords</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">topics</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">faces</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">labels</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">namedPeople</a>
-          </li>
-        </ul>
+        <nav>
+          <div class="nav nav-tabs" id="insights-tabs" role="tablist">
+            <button id="nav-ocr-tab" class="nav-link active" type="button" role="tab" 
+              data-bs-toggle="tab" 
+              data-bs-target="#nav-ocr" 
+              aria-controls="nav-ocr" 
+              aria-selected="true">ocr</button>
+            <button id="nav-keywords-tab" class="nav-link" type="button" role="tab" 
+              data-bs-toggle="tab" 
+              data-bs-target="#nav-keywords" 
+              aria-controls="nav-keywords" 
+              aria-selected="false">keywords</button>
+            <button id="nav-topics-tab" class="nav-link" type="button" role="tab" 
+              data-bs-toggle="tab" 
+              data-bs-target="#nav-topics" 
+              aria-controls="nav-topics" 
+              aria-selected="false">topics</button>
+            <button id="nav-faces-tab" class="nav-link" type="button" role="tab" 
+              data-bs-toggle="tab" 
+              data-bs-target="#nav-faces" 
+              aria-controls="nav-faces" 
+              aria-selected="false">faces</button>
+            <button id="nav-labels-tab" class="nav-link" type="button" role="tab" 
+              data-bs-toggle="tab" 
+              data-bs-target="#nav-labels" 
+              aria-controls="nav-labels" 
+              aria-selected="false">labels</button>
+            <button id="nav-namedPeople-tab" class="nav-link" type="button" role="tab" 
+              data-bs-toggle="tab" 
+              data-bs-target="#nav-namedPeople" 
+              aria-controls="nav-namedPeople" 
+              aria-selected="false">namedPeople</button>
+          </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+          <div id="nav-ocr" role="tabpanel" class="tab-pane fade show active" 
+            aria-labelledby="nav-ocr-tab">ocr</div>
+          <div id="nav-keywords" role="tabpanel" class="tab-pane fade" 
+            aria-labelledby="nav-keywords-tab">keywords</div>
+          <div id="nav-topics" role="tabpanel" class="tab-pane fade" 
+            aria-labelledby="nav-topics-tab">topics</div>
+          <div id="nav-faces" role="tabpanel" class="tab-pane fade" 
+            aria-labelledby="nav-faces-tab">faces</div>
+          <div id="nav-labels" role="tabpanel" class="tab-pane fade" 
+            aria-labelledby="nav-labels-tab">labels</div>
+          <div id="nav-namedPeople" role="tabpanel" class="tab-pane fade" 
+            aria-labelledby="nav-namedPeople-tab">namedPeople</div>
+        </div>        
       </div>
     </div>
   </div>
