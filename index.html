@@ -38,5 +38,25 @@
 
 <!-- End Document
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+
+<!-- Script
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<script>
+  // Reading query string parameters via Proxy over URLSearchParams 
+  const QsParams = new Proxy(new URLSearchParams(window.location.search), {
+    get: (searchParams, prop) => searchParams.get(prop),
+  });
+
+  document.addEventListener("DOMContentLoaded", async function(){
+    const cloud_name = QsParams.c;
+    const asset_data_url = QsParams.a;
+    console.log(`cloud: ${cloud_name}`);
+    console.log(`asset: ${asset_data_url}`);
+    console.log('Loading asset data...');
+    const resp = await fetch(asset_data_url);
+    const asset_data = await resp.json();
+    console.log(`Done`);
+  });
+</script>
 </body>
 </html>
