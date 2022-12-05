@@ -100,7 +100,9 @@
 </script>
 <script src="https://unpkg.com/cloudinary-video-player@1.9.4/dist/cld-video-player.min.js" 
   type="text/javascript"></script>
-<script>
+<script src="./js/jquery.mustache.js" 
+  type="text/javascript"></script>
+<script type="text/javascript">
   // Reading query string parameters via Proxy over URLSearchParams 
   const QsParams = new Proxy(new URLSearchParams(window.location.search), {
     get: (searchParams, prop) => searchParams.get(prop),
@@ -218,15 +220,23 @@
    * } 
    */
   function visualizeInsightsCategory(config) {
-    destUIContainer = $('#'+config.dest_ui_element_id);
+    const rootUiContainer = $('#'+config.dest_ui_element_id);
+    const destContId = config.dest_ui_element_id + "-accordion"
+    const destUIContainer = $(`<div id=${destContId} class="accordion accordion-flush"></div>`);
+    rootUiContainer.append(destUIContainer);
+
+    let _index = 1;
     for (const insight of config.category_insights) {
       insightUI = visualizeInsight({
-        insight: insight,
+        insight              : insight,
+        index                : _index,
+        ui_container_id      : destContId,
         entity_label_field   : config.entity_label_field,
         confidence_on_entity : config.confidence_on_entity,
         use_instance_source  : config.use_instance_source
       });
       destUIContainer.append(insightUI);
+      _index += 1;
     }
   }
 
@@ -235,7 +245,9 @@
    *
    * config structure:
    * {
+   *   index                : (int)     -- Used to differentiate dynamic HTML elements
    *   insight              : (Object)  -- Azure Video Indexer insight data
+   *   ui_container_id      : (string)  -- id of the UI HTML container
    *   entity_label_field   : (string)  -- field name to use as display name for each record from the insights
    *   confidence_on_entity : (bool)    -- whether to read confidence value from entity or instances
    *   use_instance_source  : (bool)    -- some entities may specify the source of the insight. Controls whether to read it
@@ -248,13 +260,19 @@
     const label = insight[config.entity_label_field];
     const insightConfidence = config.confidence_on_entity ? insight.confidence : null;
 
-    const insightContainer = $('<div class="entity-insight"></div>');
-    insightContainer.append(
-      $(`<div class="label">${label}</div>`));
+    // Model for the az-video-indexer-insight-template Mustache template
+    //   defined below
+    const model = {
+      categoryInsightsContainerId: config.ui_container_id,
+      collapseHeaderId: "cHdr" + config.index,
+      collapseSectionId: 'cSec' + config.index,
+      headerText: label,
+      timecodes: [] //offset, label
+    }
+
     for (let instance of insight.instances) {
       const source = config.use_instance_source ? instance.instanceSource : null;
       const instanceConfidence = insightConfidence ? insightConfidence : instance.confidence;
-      const instanceStartOffset = instance.start;
 
       const confidenceLabel = (parseFloat(instanceConfidence)*100).toFixed(1) + '%';
       let timestampContext = ['[🤔', confidenceLabel];
@@ -264,14 +282,44 @@
       timestampContext.push(']')
       contextLabel = timestampContext.join('');
 
-      insightContainer.append(
-        $(`<div class="timestamp"><a href="#" onclick="setVideoPlayerCurrentTime('${instanceStartOffset}');return false;">${instanceStartOffset}</a>${contextLabel}</div>`,
-        document,
-        true // keepScripts
-      ));
+      model.timecodes.push({offset: instance.start, label: contextLabel});
     }
-    return insightContainer;
+
+    const insightTmpl = $('#az-video-indexer-insight-template').text();
+    const uiMarkup = $.mustache(insightTmpl, model);
+
+    return $(uiMarkup, // data - HTML produced from the template
+      document,        // context - default
+      true);           // keepScripts
   }
 </script>
+
+<!-- Mustache.JS templates
+–––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<noscript id="az-video-indexer-insight-template" type="text/html">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="{{collapseHeaderId}}">
+      <button class="accordion-button collapsed" type="button" 
+        data-bs-toggle="collapse" 
+        data-bs-target="#{{collapseSectionId}}" 
+        aria-expanded="false" 
+        aria-controls="flush-collapseOne">
+        {{headerText}}
+      </button>
+    </h2>
+    <div id="{{collapseSectionId}}" class="accordion-collapse collapse" 
+      aria-labelledby="{{collapseHeaderId}}" 
+      data-bs-parent="#{{categoryInsightsContainerId}}">
+      <div class="accordion-body">
+        {{#timecodes}}
+        <div class="timestamp">
+          <a href="#" onclick="setVideoPlayerCurrentTime('{{offset}}');return false;">
+            {{offset}}
+          </a>{{label}}</div>
+        {{/timecodes}}
+      </div>
+    </div>
+  </div>
+</noscript>
 </body>
 </html>
