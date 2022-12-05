@@ -1,0 +1,11 @@
+.entity-insight .label {
+   padding-left: 1em;
+   font-weight: bold;
+   background-color: lightgray;
+   padding-top: 2px;
+   padding-bottom:2px;
+}
+
+.entity-insight .timestamp {
+    padding-left: 3em;
+}
