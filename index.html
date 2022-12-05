@@ -122,7 +122,9 @@
     console.log(`Resolved video asset public id to '${asset_pubid}'`);
 
     console.log('Initializing Cloudinary Video Player...');
-    __cld_video_player = cloudinary.videoPlayer('cld-player', { cloud_name: cloud_name });
+    __cld_video_player = cloudinary.videoPlayer('cld-player', { 
+      cloud_name: cloud_name,
+      bigPlayButton: 'init' });
     __cld_video_player.source(asset_pubid);
     console.log('Done')
 
