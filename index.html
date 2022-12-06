@@ -218,6 +218,24 @@
     __cld_video_player.pause(); //   when used for the first time (otherwise player stays on the thumbnail)
   }
 
+  /**
+   * Implements "sticky behavior" for expanded accordion sections.
+   * Adds/Removes 'sticky' css class.
+   * CSS is used for the in-browser behavior.
+   */
+  function ensureAccordionSectionStickyWhenExpanded(elementId) {
+    const domId = '#' + elementId
+    const accordionSectionHdr = $(domId);
+    console.log(`Applying sticky behavior to accordion header ${domId}`);
+    const accordionBtn = $('button.accordion-button', accordionSectionHdr);
+    const accordionSectionExpanded = accordionBtn.attr('aria-expanded');
+    if (accordionSectionExpanded === 'true') {
+      accordionSectionHdr.addClass('sticky')
+    } else {
+      accordionSectionHdr.removeClass('sticky');
+    }
+  }
+
 
   /**
    * Translates Azure Video Indexer insights into UI (category > entity > time codes).
@@ -278,8 +296,8 @@
     //   defined below
     const model = {
       categoryInsightsContainerId: config.ui_container_id,
-      collapseHeaderId: "cHdr" + config.index,
-      collapseSectionId: 'cSec' + config.index,
+      collapseHeaderId: "cHdr" + config.index + "__" + config.ui_container_id,
+      collapseSectionId: 'cSec' + config.index + "__" + config.ui_container_id,
       headerText: label,
       timecodes: [] //offset, label
     }
@@ -312,7 +330,8 @@
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 <noscript id="az-video-indexer-insight-template" type="text/html">
   <div class="accordion-item">
-    <h2 class="accordion-header" id="{{collapseHeaderId}}">
+    <h2 class="accordion-header" id="{{collapseHeaderId}}" 
+      onclick="ensureAccordionSectionStickyWhenExpanded(this.id); return false;">
       <button class="accordion-button collapsed" type="button" 
         data-bs-toggle="collapse" 
         data-bs-target="#{{collapseSectionId}}" 
