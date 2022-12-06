@@ -61,6 +61,11 @@
               data-bs-target="#nav-labels" 
               aria-controls="nav-labels" 
               aria-selected="false">labels</button>
+            <button id="nav-scenes-tab" class="nav-link" type="button" role="tab" 
+              data-bs-toggle="tab" 
+              data-bs-target="#nav-scenes" 
+              aria-controls="nav-scenes" 
+              aria-selected="false">scenes</button>
             <button id="nav-namedPeople-tab" class="nav-link" type="button" role="tab" 
               data-bs-toggle="tab" 
               data-bs-target="#nav-namedPeople" 
@@ -79,6 +84,8 @@
             aria-labelledby="nav-faces-tab"></div>
           <div id="nav-labels" role="tabpanel" class="tab-pane fade" 
             aria-labelledby="nav-labels-tab"></div>
+          <div id="nav-scenes" role="tabpanel" class="tab-pane fade" 
+            aria-labelledby="nav-scenes-tab"></div>
           <div id="nav-namedPeople" role="tabpanel" class="tab-pane fade" 
             aria-labelledby="nav-namedPeople-tab"></div>
         </div>        
@@ -174,6 +181,13 @@
       confidence_on_entity : false,
       use_instance_source  : false,
       dest_ui_element_id   : 'nav-labels'
+    });
+    visualizeInsightsCategory({
+      category_insights    : insights.scenes,
+      entity_label_field   : 'id',
+      confidence_on_entity : false,
+      use_instance_source  : false,
+      dest_ui_element_id   : 'nav-scenes'
     });
     visualizeInsightsCategory({
       category_insights    : insights.namedPeople,
