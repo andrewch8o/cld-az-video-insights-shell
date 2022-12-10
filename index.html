@@ -316,6 +316,14 @@
       return result;
   }
 
+  /**
+   * Within an insight model builds models for time codes.
+   * Time codes contain information about points in time when insight is present in the video.
+   * 
+   * instances  (Array) -- list of insight instances from Video Indexer JSON
+   * 
+   * Returns timecodes model value for an insight
+   */
   function getInsightTimecodesModel(instances) {
     const result = [];
     for (const rec of instances) {
