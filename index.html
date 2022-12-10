@@ -62,6 +62,44 @@
   type="text/javascript"></script>
 <script src="./js/jquery.mustache.js" 
   type="text/javascript"></script>
+<script type="text/javascript" id="ui-event-handler-scripts">
+    /**
+   * Manipulates Cloudinary Video Player instance on the page
+   * to navigate to a specific time code. 
+   * 
+   * - timeOffsetLabel (string) -- time offset 'h:mm:ss.ff' from Video Indexer insights
+   */
+   function setVideoPlayerCurrentTime(timeOffsetLabel) {
+    const segm = timeOffsetLabel.split(':');
+    const h_offset = parseInt(segm[0]) * 3600;
+    const m_offset = parseInt(segm[1]) * 60;
+    const s_offset = parseFloat(segm[2]);
+
+    const offsetSeconds= Number(h_offset) + Number(m_offset) + Number(s_offset);
+    console.log(`Setting video player current time [${timeOffsetLabel}] > [${offsetSeconds}]`);
+    __cld_video_player.currentTime(offsetSeconds);
+    __cld_video_player.play();  // Using play-pause for the offset to take effect 
+    __cld_video_player.pause(); //   when used for the first time (otherwise player stays on the thumbnail)
+  }
+
+  /**
+   * Implements "sticky behavior" for expanded accordion sections.
+   * Adds/Removes 'sticky' css class.
+   * CSS is used for the in-browser behavior.
+   */
+  function ensureAccordionSectionStickyWhenExpanded(elementId) {
+    const domId = '#' + elementId
+    const accordionSectionHdr = $(domId);
+    console.log(`Applying sticky behavior to accordion header ${domId}`);
+    const accordionBtn = $('button.accordion-button', accordionSectionHdr);
+    const accordionSectionExpanded = accordionBtn.attr('aria-expanded');
+    if (accordionSectionExpanded === 'true') {
+      accordionSectionHdr.addClass('sticky')
+    } else {
+      accordionSectionHdr.removeClass('sticky');
+    }
+  }
+</script>
 <script type="text/javascript">
   // Reading query string parameters via Proxy over URLSearchParams 
   const QsParams = new Proxy(new URLSearchParams(window.location.search), {
@@ -202,44 +240,6 @@
     });
     console.log('Done');
   });
-
-
-  /**
-   * Manipulates Cloudinary Video Player instance on the page
-   * to navigate to a specific time code. 
-   * 
-   * - timeOffsetLabel (string) -- time offset 'h:mm:ss.ff' from Video Indexer insights
-   */
-  function setVideoPlayerCurrentTime(timeOffsetLabel) {
-    const segm = timeOffsetLabel.split(':');
-    const h_offset = parseInt(segm[0]) * 3600;
-    const m_offset = parseInt(segm[1]) * 60;
-    const s_offset = parseFloat(segm[2]);
-
-    const offsetSeconds= Number(h_offset) + Number(m_offset) + Number(s_offset);
-    console.log(`Setting video player current time [${timeOffsetLabel}] > [${offsetSeconds}]`);
-    __cld_video_player.currentTime(offsetSeconds);
-    __cld_video_player.play();  // Using play-pause for the offset to take effect 
-    __cld_video_player.pause(); //   when used for the first time (otherwise player stays on the thumbnail)
-  }
-
-  /**
-   * Implements "sticky behavior" for expanded accordion sections.
-   * Adds/Removes 'sticky' css class.
-   * CSS is used for the in-browser behavior.
-   */
-  function ensureAccordionSectionStickyWhenExpanded(elementId) {
-    const domId = '#' + elementId
-    const accordionSectionHdr = $(domId);
-    console.log(`Applying sticky behavior to accordion header ${domId}`);
-    const accordionBtn = $('button.accordion-button', accordionSectionHdr);
-    const accordionSectionExpanded = accordionBtn.attr('aria-expanded');
-    if (accordionSectionExpanded === 'true') {
-      accordionSectionHdr.addClass('sticky')
-    } else {
-      accordionSectionHdr.removeClass('sticky');
-    }
-  }
 
   /**
    * Visualizes Video Indexer insights to the HTML shell UI
