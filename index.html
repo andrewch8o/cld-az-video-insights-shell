@@ -36,6 +36,7 @@
       <div class="col-6">
         <nav>
           <div class="nav nav-tabs" id="insights-tabs" role="tablist">
+            <!-- Navigation tabs for each category of insights are dynamically created here -->
             <button id="nav-ocr-tab" class="nav-link active" type="button" role="tab" 
               data-bs-toggle="tab" 
               data-bs-target="#nav-ocr" 
@@ -74,6 +75,7 @@
           </div>
         </nav>
         <div class="tab-content" id="nav-tabContent">
+          <!-- Content areas for each category of insights are dynamically created here -->
           <div id="nav-ocr" role="tabpanel" class="tab-pane fade show active" 
             aria-labelledby="nav-ocr-tab"></div>
           <div id="nav-keywords" role="tabpanel" class="tab-pane fade" 
@@ -328,6 +330,43 @@
 
 <!-- Mustache.JS templates
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<!-- 
+  Categories are visualized using Bootstrap tabs.
+  Each tab requires two elements in separate containers - tab header and tab content area.
+  This is tab header.
+
+  Expects the following properties of the model:
+  {
+    tId,          -- id of the tab HTML element (used to "bind" it to the tab content area)
+    cssState,     -- 'active' (if tab should be selected when rendered). "Falsy" otherwise
+    caId,         -- id of the content area HTML element (used to "bind" it to the tab)
+    title,        -- title to be used for the tab header
+  }
+-->
+<noscript id="az-video-indexer-category-tabheader-template" type="text/html">
+  <button id="{{tId}}" class="nav-link {{cssState}}" type="button" role="tab" 
+    data-bs-toggle="tab"
+    data-bs-target="#{{caId}}" 
+    aria-controls="{{caId}}" 
+    aria-selected="true">{{title}}</button>
+</noscript>
+
+<!-- 
+  Categories are visualized using Bootstrap tabs.
+  Each tab requires two elements in separate containers - tab header and tab content area.
+  This is tab content area.
+
+  Expects the following properties of the model:
+  {
+    tId:          -- id of the tab HTML element (used to "bind" it to the tab content area)
+    caId:         -- id of the content area HTML element (used to "bind" it to the tab)
+  }
+-->
+<noscript id="az-video-indexer-category-tabcontent-template" type="text/html">
+  <div id="{{caId}}" role="tabpanel" class="tab-pane fade show active" 
+    aria-labelledby="{{tId}}"></div>
+</noscript>
+
 <noscript id="az-video-indexer-insight-template" type="text/html">
   <div class="accordion-item">
     <h2 class="accordion-header" id="{{collapseHeaderId}}" 
