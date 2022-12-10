@@ -91,17 +91,17 @@
    * Insights
    * Each insight model is expected to have the following structure
    * {
-   *    label,
-   *    confLabel,
-   *    collapse {
-   *      hId,
-   *      sId,
-   *    },
-   *    timecodes: [
+   *    label,               (string) -- display label for the insight in the UI
+   *    confLabel,           (string) -- label for the confidence level reported by AI 
+   *    collapse {           (Object) -- configuration for the collapse section in accordion UI
+   *      hId,               (string) -- collapse section header id
+   *      sId,               (string) -- collapse section body id
+   *    },    
+   *    timecodes: [         (Array)  -- list of timecodes from entity instances reported by Video Indexer
    *        {
-   *           rawVal,
-   *           displayVal,
-   *           label
+   *           rawVal,       (string) -- time code raw value, preserves fraction of a second (to be passed to player)
+   *           displayVal,   (string) -- to be used as display value for time code (for consistent display)
+   *           label         (string) -- additional information for time code to be displayed in UI
    *        }
    *    ]
    * }
