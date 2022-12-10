@@ -119,6 +119,25 @@
 
   __cld_video_player = null;
 
+  /**
+   * Model that describes all the insight categories (sections) from Azure Video Indexer JSON.  
+   *
+   * Each element is expected to have the following structure
+   * 
+   * {
+   *  selector          (string) -- section data selector
+   *  tId,              (string) -- id of the tab HTML element (used to "bind" it to the tab content area)
+   *  caId,             (string) -- id of the content area HTML element (used to "bind" it to the tab)
+   *  title,            (string) -- title to be used for the tab header
+   *  cssState,         (string) -- 'active' (if tab should be selected when rendered). "Falsy" otherwise
+   *  insights,         (Array)  -- used to build UI model from the Azure Video Indexer JSON
+   *  dataToModelConf { (Object) -- configuration used when transforming Video Indexer JSON to UI model
+   *    labelField               (string) -- which field value to use as the label for the insight in the UI
+   *  }
+   */
+  __cld_video_indexer_sections_model = [
+  ]
+
   $(document).ready(async function(){
     const cloud_name = QsParams.c;
     const asset_data_url = QsParams.a;
@@ -334,14 +353,6 @@
   Categories are visualized using Bootstrap tabs.
   Each tab requires two elements in separate containers - tab header and tab content area.
   This is tab header.
-
-  Expects the following properties of the model:
-  {
-    tId,          -- id of the tab HTML element (used to "bind" it to the tab content area)
-    cssState,     -- 'active' (if tab should be selected when rendered). "Falsy" otherwise
-    caId,         -- id of the content area HTML element (used to "bind" it to the tab)
-    title,        -- title to be used for the tab header
-  }
 -->
 <noscript id="az-video-indexer-category-tabheader-template" type="text/html">
   <button id="{{tId}}" class="nav-link {{cssState}}" type="button" role="tab" 
