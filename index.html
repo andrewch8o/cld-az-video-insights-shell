@@ -285,6 +285,14 @@
     }
   }
 
+  /**
+   * Builds model for Video Indexer section insights.
+   * 
+   * sectionModel  (Object) --  model for the section to be processed
+   * sectionData   (Object) --  section data from Video Indexer JSON
+   * 
+   * Returns insights model value to be used with HTML templates 
+   */
   function getInsightsModel(sectionModel, sectionData) {
       const result = [];
       const labelFld = sectionModel.dataToModelConf.labelField;
