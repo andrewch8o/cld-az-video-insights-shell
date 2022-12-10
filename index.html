@@ -37,59 +37,10 @@
         <nav>
           <div class="nav nav-tabs" id="insights-tabs" role="tablist">
             <!-- Navigation tabs for each category of insights are dynamically created here -->
-            <button id="nav-ocr-tab" class="nav-link active" type="button" role="tab" 
-              data-bs-toggle="tab" 
-              data-bs-target="#nav-ocr" 
-              aria-controls="nav-ocr" 
-              aria-selected="true">ocr</button>
-            <button id="nav-keywords-tab" class="nav-link" type="button" role="tab" 
-              data-bs-toggle="tab" 
-              data-bs-target="#nav-keywords" 
-              aria-controls="nav-keywords" 
-              aria-selected="false">keywords</button>
-            <button id="nav-topics-tab" class="nav-link" type="button" role="tab" 
-              data-bs-toggle="tab" 
-              data-bs-target="#nav-topics" 
-              aria-controls="nav-topics" 
-              aria-selected="false">topics</button>
-            <button id="nav-faces-tab" class="nav-link" type="button" role="tab" 
-              data-bs-toggle="tab" 
-              data-bs-target="#nav-faces" 
-              aria-controls="nav-faces" 
-              aria-selected="false">faces</button>
-            <button id="nav-labels-tab" class="nav-link" type="button" role="tab" 
-              data-bs-toggle="tab" 
-              data-bs-target="#nav-labels" 
-              aria-controls="nav-labels" 
-              aria-selected="false">labels</button>
-            <button id="nav-scenes-tab" class="nav-link" type="button" role="tab" 
-              data-bs-toggle="tab" 
-              data-bs-target="#nav-scenes" 
-              aria-controls="nav-scenes" 
-              aria-selected="false">scenes</button>
-            <button id="nav-namedPeople-tab" class="nav-link" type="button" role="tab" 
-              data-bs-toggle="tab" 
-              data-bs-target="#nav-namedPeople" 
-              aria-controls="nav-namedPeople" 
-              aria-selected="false">namedPeople</button>
           </div>
         </nav>
-        <div class="tab-content" id="nav-tabContent">
+        <div class="tab-content" id="insights-content">
           <!-- Content areas for each category of insights are dynamically created here -->
-          <div id="nav-ocr" role="tabpanel" class="tab-pane fade show active" 
-            aria-labelledby="nav-ocr-tab"></div>
-          <div id="nav-keywords" role="tabpanel" class="tab-pane fade" 
-            aria-labelledby="nav-keywords-tab"></div>
-          <div id="nav-topics" role="tabpanel" class="tab-pane fade" 
-            aria-labelledby="nav-topics-tab"></div>
-          <div id="nav-faces" role="tabpanel" class="tab-pane fade" 
-            aria-labelledby="nav-faces-tab"></div>
-          <div id="nav-labels" role="tabpanel" class="tab-pane fade" 
-            aria-labelledby="nav-labels-tab"></div>
-          <div id="nav-scenes" role="tabpanel" class="tab-pane fade" 
-            aria-labelledby="nav-scenes-tab"></div>
-          <div id="nav-namedPeople" role="tabpanel" class="tab-pane fade" 
-            aria-labelledby="nav-namedPeople-tab"></div>
         </div>        
       </div>
     </div>
@@ -125,17 +76,94 @@
    * Each element is expected to have the following structure
    * 
    * {
-   *  selector          (string) -- section data selector
-   *  tId,              (string) -- id of the tab HTML element (used to "bind" it to the tab content area)
-   *  caId,             (string) -- id of the content area HTML element (used to "bind" it to the tab)
+   *  dataSelector      (string) -- section data selector (in Video Indexer JSON)
+   *                                Also used to dynamically construct id(s) for UI HTML elements
+   *  uiBaseId,         (string) -- id to be used to differentiate UI elements
    *  title,            (string) -- title to be used for the tab header
-   *  cssState,         (string) -- 'active' (if tab should be selected when rendered). "Falsy" otherwise
+   *  cssState,         (string) -- 'active' (if tab should be selected when rendered). 
+   *                                "Falsy" otherwise
    *  insights,         (Array)  -- used to build UI model from the Azure Video Indexer JSON
+   *                                Created dynamically during execution from Video Indexer JSON
    *  dataToModelConf { (Object) -- configuration used when transforming Video Indexer JSON to UI model
-   *    labelField               (string) -- which field value to use as the label for the insight in the UI
+   *    labelField                  (string) -- which field value to use as the label for the insight in the UI
    *  }
+   * 
+   * Insights
+   * Each insight model is expected to have the following structure
+   * {
+   *    label,
+   *    confLabel,
+   *    collapse {
+   *      hId,
+   *      sId,
+   *    },
+   *    timecodes: [
+   *        {
+   *           rawVal,
+   *           displayVal,
+   *           label
+   *        }
+   *    ]
+   * }
    */
   __cld_video_indexer_sections_model = [
+    {
+      dataSelector: 'ocr',
+      uiBaseId:     'ocr',
+      title:        'OCR',
+      cssState:     'active',
+      dataToModelConf : {
+        labelField: 'text'
+      }
+    },
+    {
+      dataSelector: 'keywords',
+      uiBaseId:     'keywords',
+      title:        'Keywords',
+      dataToModelConf : {
+        labelField: 'text'
+      }
+    },
+    {
+      dataSelector: 'topics',
+      uiBaseId:     'topics',
+      title:        'Topics',
+      dataToModelConf : {
+        labelField: 'name'
+      }
+    },
+    {
+      dataSelector: 'faces',
+      uiBaseId:     'faces',
+      title:        'Faces',
+      dataToModelConf : {
+        labelField: 'name'
+      }
+    },
+    {
+      dataSelector: 'labels',
+      uiBaseId:     'labels',
+      title:        'Labels',
+      dataToModelConf : {
+        labelField: 'name'
+      }
+    },
+    {
+      dataSelector: 'scenes',
+      uiBaseId:     'scenes',
+      title:        'Scenes',
+      dataToModelConf : {
+        labelField: 'id'
+      }
+    },
+    {
+      dataSelector: 'namedPeople',
+      uiBaseId:     'namedPeople',
+      title:        'Named People',
+      dataToModelConf : {
+        labelField: 'name'
+      }
+    }
   ]
 
   $(document).ready(async function(){
@@ -166,59 +194,15 @@
     $('#nav-tabContent').css({"max-height": maxHeight, "overflow-y": "scroll"});
     console.log('Done');
 
-    insights = asset_data.info.multiple.azure_video_indexer.data['en-US'];
     console.log('Visualizing insights...');
-    visualizeInsightsCategory({
-      category_insights    : insights.ocr,
-      entity_label_field   : 'text',
-      confidence_on_entity : true,
-      use_instance_source  : false,
-      dest_ui_element_id   : 'nav-ocr'
-    });
-    visualizeInsightsCategory({
-      category_insights    : insights.keywords,
-      entity_label_field   : 'text',
-      confidence_on_entity : true,
-      use_instance_source  : false,
-      dest_ui_element_id   : 'nav-keywords'
-    });
-    visualizeInsightsCategory({
-      category_insights    : insights.topics,
-      entity_label_field   : 'name',
-      confidence_on_entity : true,
-      use_instance_source  : false,
-      dest_ui_element_id   : 'nav-topics'
-    });
-    visualizeInsightsCategory({
-      category_insights    : insights.faces,
-      entity_label_field   : 'name',
-      confidence_on_entity : true,
-      use_instance_source  : false,
-      dest_ui_element_id   : 'nav-faces'
-    });
-    visualizeInsightsCategory({
-      category_insights    : insights.labels,
-      entity_label_field   : 'name',
-      confidence_on_entity : false,
-      use_instance_source  : false,
-      dest_ui_element_id   : 'nav-labels'
-    });
-    visualizeInsightsCategory({
-      category_insights    : insights.scenes,
-      entity_label_field   : 'id',
-      confidence_on_entity : false,
-      use_instance_source  : false,
-      dest_ui_element_id   : 'nav-scenes'
-    });
-    visualizeInsightsCategory({
-      category_insights    : insights.namedPeople,
-      entity_label_field   : 'name',
-      confidence_on_entity : true,
-      use_instance_source  : true,
-      dest_ui_element_id   : 'nav-namedPeople'
+    insights = asset_data.info.multiple.azure_video_indexer.data['en-US'];
+    visualizeInsights({
+      model: __cld_video_indexer_sections_model,
+      input: insights
     });
     console.log('Done');
   });
+
 
   /**
    * Manipulates Cloudinary Video Player instance on the page
@@ -257,93 +241,89 @@
     }
   }
 
-
   /**
-   * Translates Azure Video Indexer insights into UI (category > entity > time codes).
-   * UI events are used to manipulate Cloudinary Video Player instance on the page
-   * to navigate to each individual time code. 
-   *
-   * config structure:
-   * {
-   *   category_insights    : (Array)   -- Azure Video Indexer insights data for the category
-   *   entity_label_field   : (string)  -- field name to use as display name for each record from the insights
-   *   confidence_on_entity : (bool)    -- whether to read confidence value from entity or instances
-   *   use_instance_source  : (bool)    -- some entities may specify the source of the insight. Controls whether to read it
-   *   dest_ui_element_id   : (string)  -- id of the HTML element to translate the category insights into
-   * } 
+   * Visualizes Video Indexer insights to the HTML shell UI
+   * 
+   * config: {
+   *   model     -- see the `__cld_video_indexer_sections_model` docstring
+   *   input
+   * }
+   * 
    */
-  function visualizeInsightsCategory(config) {
-    const rootUiContainer = $('#'+config.dest_ui_element_id);
-    const destContId = config.dest_ui_element_id + "-accordion"
-    const destUIContainer = $(`<div id=${destContId} class="accordion accordion-flush"></div>`);
-    rootUiContainer.append(destUIContainer);
+  function visualizeInsights(config) {
+    expandModelFromInput(config);
 
-    let _index = 1;
-    for (const insight of config.category_insights) {
-      insightUI = visualizeInsight({
-        insight              : insight,
-        index                : _index,
-        ui_container_id      : destContId,
-        entity_label_field   : config.entity_label_field,
-        confidence_on_entity : config.confidence_on_entity,
-        use_instance_source  : config.use_instance_source
-      });
-      destUIContainer.append(insightUI);
-      _index += 1;
+    for (const section of config.model) {
+      const tabhdrTmpl = $('#az-video-indexer-category-tabheader-template').text();
+      const tabhdrMarkup = $.mustache(tabhdrTmpl, section);
+      const tabHdr = $.parseHTML(
+        tabhdrMarkup, // data - HTML produced from the template
+        document,     // context - default
+        false);       // don't keepScripts
+      $('#insights-tabs').append(tabHdr);
+
+      const contentTmpl = $('#az-video-indexer-category-tabcontent-template').text();
+      const contentMarkup = $.mustache(contentTmpl, section);
+      const tabContent = $.parseHTML(
+        contentMarkup,// data - HTML produced from the template
+        document,     // context - default
+        true);        // keepScripts to enable in-template JS event handlers
+      $('#insights-content').append(tabContent);
     }
   }
 
   /**
-   * Translates a single Azure Video Indexer insight into UI element
-   *
-   * config structure:
-   * {
-   *   index                : (int)     -- Used to differentiate dynamic HTML elements
-   *   insight              : (Object)  -- Azure Video Indexer insight data
-   *   ui_container_id      : (string)  -- id of the UI HTML container
-   *   entity_label_field   : (string)  -- field name to use as display name for each record from the insights
-   *   confidence_on_entity : (bool)    -- whether to read confidence value from entity or instances
-   *   use_instance_source  : (bool)    -- some entities may specify the source of the insight. Controls whether to read it
-   * }
+   * Expands model data from the Video Indexer input
    * 
-   * returns (Object)                   -- jQuery object with the new UI element
+   * config - see the visualizeInsights docstring
    */
-  function visualizeInsight(config) {
-    const insight = config.insight;
-    const label = insight[config.entity_label_field];
-    const insightConfidence = config.confidence_on_entity ? insight.confidence : null;
-
-    // Model for the az-video-indexer-insight-template Mustache template
-    //   defined below
-    const model = {
-      categoryInsightsContainerId: config.ui_container_id,
-      collapseHeaderId: "cHdr" + config.index + "__" + config.ui_container_id,
-      collapseSectionId: 'cSec' + config.index + "__" + config.ui_container_id,
-      headerText: label,
-      timecodes: [] //offset, label
+  function expandModelFromInput(config) {
+    for (const sectionModel of config.model) {
+      const sectionData = config.input[sectionModel.dataSelector];
+      sectionModel.insights = getInsightsModel(sectionModel, sectionData);
     }
+  }
 
-    for (let instance of insight.instances) {
-      const source = config.use_instance_source ? instance.instanceSource : null;
-      const instanceConfidence = insightConfidence ? insightConfidence : instance.confidence;
-
-      const confidenceLabel = (parseFloat(instanceConfidence)*100).toFixed(1) + '%';
-      let timestampContext = ['[🤔', confidenceLabel];
-      if (source) {
-        timestampContext.push(`, ${source}👀`);
+  function getInsightsModel(sectionModel, sectionData) {
+      const result = [];
+      const labelFld = sectionModel.dataToModelConf.labelField;
+      let index = 0;
+      for (const insightData of sectionData) {
+        const insight = {};
+        insight.label = insightData[labelFld];
+        insight.confLabel = "";
+        if (insightData.hasOwnProperty('confidence')) {
+          const displayVal = (parseFloat(insightData.confidence)*100).toFixed(1) + '%';
+          insight.confLabel = `🤔${displayVal}`;
+        }
+        insight.collapse = {
+          hId : `${sectionModel.uiBaseId}-chdr-${index}`,
+          sId : `${sectionModel.uiBaseId}-csec-${index}`
+        }
+        insight.timecodes = getInsightTimecodesModel(insightData.instances);
+        result.push(insight);
+        index += 1;
       }
-      timestampContext.push(']')
-      contextLabel = timestampContext.join('');
+      return result;
+  }
 
-      model.timecodes.push({offset: instance.start, label: contextLabel});
+  function getInsightTimecodesModel(instances) {
+    const result = [];
+    for (const rec of instances) {
+      const timecode = {};
+      timecode.rawVal = rec.start;
+      timecode.displayVal = rec.start;
+      timecode.label = "";
+      if (rec.hasOwnProperty('confidence')) {
+        const confidenceLabel = (parseFloat(rec.confidence)*100).toFixed(1) + '%';
+        timecode.label = `🤔${confidenceLabel}`;
+      }
+      if (rec.hasOwnProperty('instanceSource')) {
+        timecode.label += `, ${rec.instanceSource}👀`
+      }
+      result.push(timecode);
     }
-
-    const insightTmpl = $('#az-video-indexer-insight-template').text();
-    const uiMarkup = $.mustache(insightTmpl, model);
-
-    return $(uiMarkup, // data - HTML produced from the template
-      document,        // context - default
-      true);           // keepScripts
+    return result;
   }
 </script>
 
@@ -351,14 +331,19 @@
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 <!-- 
   Categories are visualized using Bootstrap tabs.
+  https://getbootstrap.com/docs/5.0/components/navs-tabs/#tabs
+
   Each tab requires two elements in separate containers - tab header and tab content area.
   This is tab header.
+
+  The template is designed to work with elements in the `__cld_video_indexer_sections_model` model,
+  see the model docstring
 -->
 <noscript id="az-video-indexer-category-tabheader-template" type="text/html">
-  <button id="{{tId}}" class="nav-link {{cssState}}" type="button" role="tab" 
+  <button id="{{uiBaseId}}-tabhdr" class="nav-link {{cssState}}" type="button" role="tab" 
     data-bs-toggle="tab"
-    data-bs-target="#{{caId}}" 
-    aria-controls="{{caId}}" 
+    data-bs-target="#{{uiBaseId}}-tabcontent" 
+    aria-controls="{{uiBaseId}}-tabcontent" 
     aria-selected="true">{{title}}</button>
 </noscript>
 
@@ -367,42 +352,42 @@
   Each tab requires two elements in separate containers - tab header and tab content area.
   This is tab content area.
 
-  Expects the following properties of the model:
-  {
-    tId:          -- id of the tab HTML element (used to "bind" it to the tab content area)
-    caId:         -- id of the content area HTML element (used to "bind" it to the tab)
-  }
+  The template is designed to work with elements in the `__cld_video_indexer_sections_model` model,
+  see the model docstring
 -->
 <noscript id="az-video-indexer-category-tabcontent-template" type="text/html">
-  <div id="{{caId}}" role="tabpanel" class="tab-pane fade show active" 
-    aria-labelledby="{{tId}}"></div>
-</noscript>
-
-<noscript id="az-video-indexer-insight-template" type="text/html">
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="{{collapseHeaderId}}" 
-      onclick="ensureAccordionSectionStickyWhenExpanded(this.id); return false;">
-      <button class="accordion-button collapsed" type="button" 
-        data-bs-toggle="collapse" 
-        data-bs-target="#{{collapseSectionId}}" 
-        aria-expanded="false" 
-        aria-controls="flush-collapseOne">
-        {{headerText}}
-      </button>
-    </h2>
-    <div id="{{collapseSectionId}}" class="accordion-collapse collapse" 
-      aria-labelledby="{{collapseHeaderId}}" 
-      data-bs-parent="#{{categoryInsightsContainerId}}">
-      <div class="accordion-body">
-        {{#timecodes}}
-        <div class="timestamp">
-          <a href="#" onclick="setVideoPlayerCurrentTime('{{offset}}');return false;">
-            {{offset}}
-          </a>{{label}}</div>
-        {{/timecodes}}
+  <div id="{{uiBaseId}}-tabcontent" role="tabpanel" class="tab-pane fade show active" 
+    aria-labelledby="{{uiBaseId}}-tabhdr">
+    <div class="accordion accordion-flush" id="{{uiBaseId}}-accordion">
+      {{#insights}}
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="{{collapse.hId}}" 
+          onclick="ensureAccordionSectionStickyWhenExpanded(this.id); return false;">
+          <button class="accordion-button collapsed" type="button" 
+            data-bs-toggle="collapse" 
+            data-bs-target="#{{collapse.sId}}" 
+            aria-expanded="false" 
+            aria-controls="{{collapse.sId}}">
+            {{label}}{{confLabel}}
+          </button>
+        </h2>
+        <div id="{{collapse.sId}}" class="accordion-collapse collapse" 
+          aria-labelledby="{{collapse.hId}}" 
+          data-bs-parent="#{{uiBaseId}}-accordion">
+          <div class="accordion-body">
+            {{#timecodes}}
+            <div class="timestamp">
+              <a href="#" onclick="setVideoPlayerCurrentTime('{{rawVal}}');return false;">
+                {{displayVal}}
+              </a>{{label}}</div>
+            {{/timecodes}}
+          </div>
+        </div>
       </div>
+      {{/insights}}
     </div>
   </div>
 </noscript>
+
 </body>
 </html>
