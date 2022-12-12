@@ -336,7 +336,10 @@
         timecode.label = `🤔${confidenceLabel}`;
       }
       if (rec.hasOwnProperty('instanceSource')) {
-        timecode.label += `, ${rec.instanceSource}👀`
+        if (timecode.label.length > 0) {
+          timecode.label += ', ';  
+        }
+        timecode.label += `${rec.instanceSource}👀`
       }
       result.push(timecode);
     }
