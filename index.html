@@ -397,12 +397,18 @@
           aria-labelledby="{{collapse.hId}}" 
           data-bs-parent="#{{uiBaseId}}-accordion">
           <div class="accordion-body">
+            <div class="container">
             {{#timecodes}}
-            <div class="timestamp">
-              <a href="#" onclick="setVideoPlayerCurrentTime('{{rawVal}}');return false;">
-                {{displayVal}}
-              </a>{{label}}</div>
+              <div class="row">
+                <div class="col-4">
+                  <a href="#" onclick="setVideoPlayerCurrentTime('{{rawVal}}');return false;">
+                    {{displayVal}}
+                  </a>
+                </div>
+                <div class="col-8">{{label}}</div>
+              </div>
             {{/timecodes}}
+            </div>
           </div>
         </div>
       </div>
