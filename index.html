@@ -385,7 +385,12 @@
             data-bs-target="#{{collapse.sId}}" 
             aria-expanded="false" 
             aria-controls="{{collapse.sId}}">
-            {{label}}{{confLabel}}
+            <div class="container">
+              <div class="row">
+                <div class="col-9">{{label}}</div>
+                <div class="col-3">{{confLabel}}</div>
+              </div>
+            </div>
           </button>
         </h2>
         <div id="{{collapse.sId}}" class="accordion-collapse collapse" 
