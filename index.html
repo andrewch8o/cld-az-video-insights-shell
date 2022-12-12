@@ -203,6 +203,10 @@
       accordionSectionHdr.removeClass('sticky');
     }
   }
+
+  $(window).resize(() => {
+    ensureInsightsListUIHeight();
+  });
 </script>
 <script type="text/javascript" id="shell-ui-scripts">
   $(document).ready(async function(){
@@ -225,14 +229,6 @@
     __cld_video_player.source(asset_pubid);
     console.log('Done')
 
-    console.log('Adjusting height for the insights list area');
-    viewportHeight = window.innerHeight;
-    tabsNav = $('#insights-tabs');
-    topOffset = tabsNav.offset().top + tabsNav.height();
-    maxHeight = viewportHeight - topOffset - 10;
-    $('#nav-tabContent').css({"max-height": maxHeight, "overflow-y": "scroll"});
-    console.log('Done');
-
     console.log('Visualizing insights...');
     insights = asset_data.info.multiple.azure_video_indexer.data['en-US'];
     visualizeInsights({
@@ -240,7 +236,24 @@
       input: insights
     });
     console.log('Done');
+
+    console.log('Adjusting height for the insights list area');
+    ensureInsightsListUIHeight();
+    console.log('Done');
   });
+
+  /**
+   * List of insights can be long enough to require document scroll.
+   * That "scrolls out" the video player out of the view making visual validation more tedious.
+   * The function ensures that insights list always scrolls in view with video player side-by-side.
+   */
+  function ensureInsightsListUIHeight() {
+    viewportHeight = window.innerHeight;
+    tabsNav = $('#insights-tabs');
+    topOffset = tabsNav.offset().top + tabsNav.height();
+    maxHeight = viewportHeight - topOffset - 10;
+    $('#insights-content').css({"max-height": maxHeight, "overflow-y": "scroll"});
+  }
 
   /**
    * Visualizes Video Indexer insights to the HTML shell UI
