@@ -86,6 +86,11 @@
    *                                Created dynamically during execution from Video Indexer JSON
    *  dataToModelConf { (Object) -- configuration used when transforming Video Indexer JSON to UI model
    *    labelField                  (string) -- which field value to use as the label for the insight in the UI
+   *  },
+   * 
+   *  doc: {             (Object) -- documentation references
+   *    link,           (string) -- link to doc article
+   *    blurb           (string) -- blurb from documentation 
    *  }
    * }
    * 
@@ -115,6 +120,10 @@
       cssState:     'active',
       dataToModelConf : {
         labelField: 'text'
+      },
+      doc: {
+        link:       'https://learn.microsoft.com/en-us/legal/azure-video-indexer/ocr-transparency-note',
+        blurb:      'Text from images like pictures, street signs and products.'
       }
     },
     {
@@ -123,6 +132,10 @@
       title:        'Keywords',
       dataToModelConf : {
         labelField: 'text'
+      },
+      doc: {
+        link:       'https://learn.microsoft.com/en-us/legal/azure-video-indexer/keywords-transparency-note',
+        blurb:      'Keywords discussed in the media file.'
       }
     },
     {
@@ -131,6 +144,10 @@
       title:        'Topics',
       dataToModelConf : {
         labelField: 'name'
+      },
+      doc: {
+        link:       'https://learn.microsoft.com/en-us/legal/azure-video-indexer/topics-inference-transparency-note',
+        blurb:      'Inferred insights derived from transcribed audio, OCR content in visual text, and celebrities recognized in the video using the Video Indexer facial recognition model.'
       }
     },
     {
@@ -139,6 +156,10 @@
       title:        'Faces',
       dataToModelConf : {
         labelField: 'name'
+      },
+      doc: {
+        link:       'https://learn.microsoft.com/en-us/legal/azure-video-indexer/face-detection-transparency-note',
+        blurb:      'Detects and aggregates similar faces in groups. The celebrities recognition module is then run to recognize celebrities.'
       }
     },
     {
@@ -147,6 +168,10 @@
       title:        'Labels',
       dataToModelConf : {
         labelField: 'name'
+      },
+      doc: {
+        link:       'https://learn.microsoft.com/en-us/legal/azure-video-indexer/labels-identification-transparency-note',
+        blurb:      'Identifies visual objects like sunglasses or actions like swimming, appearing in the video footage of the media file.'
       }
     },
     {
@@ -155,6 +180,10 @@
       title:        'Named People',
       dataToModelConf : {
         labelField: 'name'
+      },
+      doc: {
+        link:       'https://learn.microsoft.com/en-us/legal/azure-video-indexer/named-entities-transparency-note',
+        blurb:      'Uses Natural Language Processing to extract insights on the locations, people and brands appearing in audio and images in the media file. Named entities extraction is automatically used with Transcription and OCR and its insights are based on those extracted during these processes.'
       }
     }
   ]
