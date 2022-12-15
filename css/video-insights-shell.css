@@ -2,3 +2,18 @@
     position: sticky;
     top: 0px;
 }
+
+/*
+Reduces padding set by .nav-link class for narrower tabs
+*/
+.nav-tab-narrow {
+    padding: .5rem;
+}
+
+/*
+Sets smaller font size for the bootstrap icons used as help
+icon in navigation tabs
+*/
+.tab-help-icon {
+    font-size: 0.85em;
+}
