@@ -107,7 +107,11 @@
    *    collapse {           (Object) -- configuration for the collapse section in accordion UI
    *      hId,               (string) -- collapse section header id
    *      sId,               (string) -- collapse section body id
-   *    },    
+   *    },
+   *    category: {          (Object) -- Copies of values from section(category). Copies required due to Mustache scoping limitations.
+   *      iconClass          (string) -- copy of iconClass from the insight section (category)
+   *      tooltipLabel       (string) -- copy of title from the insight section (category)
+   *    }    
    *    timecodes: [         (Array)  -- list of timecodes from entity instances reported by Video Indexer
    *        {
    *           rawVal,       (string) -- time code raw value, preserves fraction of a second (to be passed to player)
@@ -286,6 +290,13 @@
     $('[data-bs-toggle="popover"]').popover();
     console.log('Done');
 
+    console.log('Enabling bootstrap tooltips');
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+    console.log('Done');
+
     console.log('Adjusting height for the insights list area');
     ensureInsightsListUIHeight();
     console.log('Done');
@@ -363,6 +374,10 @@
           hId : `${sectionModel.uiBaseId}-chdr-${index}`,
           sId : `${sectionModel.uiBaseId}-csec-${index}`
         }
+        insight.category = {
+          iconClass : sectionModel.ui.iconClass,
+          tooltipLabel : sectionModel.title
+        };
         insight.timecodes = getInsightTimecodesModel(insightData.instances);
         result.push(insight);
         index += 1;
@@ -448,7 +463,10 @@
             aria-controls="{{collapse.sId}}">
             <div class="container">
               <div class="row">
-                <div class="col-9">{{label}}</div>
+                <div class="col-8">{{label}}</div>
+                <div class="col-1 bi {{category.iconClass}}"
+                  data-bs-toggle="tooltip"
+                  title="{{category.tooltipLabel}}"></div>
                 <div class="col-3">{{confLabel}}</div>
               </div>
             </div>
