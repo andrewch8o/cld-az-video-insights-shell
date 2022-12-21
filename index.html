@@ -93,6 +93,10 @@
    *    link,           (string) -- link to doc article
    *    blurb           (string) -- blurb from documentation 
    *  }
+   * 
+   *  ui: {             (Object) -- UI representation config
+   *    iconClass       (string) -- Bootstrap icon class to represent the section on insight UI elements
+   *  }
    * }
    * 
    * Insights
@@ -125,6 +129,9 @@
       doc: {
         link:       'https://learn.microsoft.com/en-us/legal/azure-video-indexer/ocr-transparency-note',
         blurb:      'Text from images like pictures, street signs and products.'
+      },
+      ui: {
+        iconClass:  'bi-fonts'
       }
     },
     {
@@ -137,6 +144,9 @@
       doc: {
         link:       'https://learn.microsoft.com/en-us/legal/azure-video-indexer/keywords-transparency-note',
         blurb:      'Keywords discussed in the media file.'
+      },
+      ui: {
+        iconClass:  'bi-key'
       }
     },
     {
@@ -149,6 +159,9 @@
       doc: {
         link:       'https://learn.microsoft.com/en-us/legal/azure-video-indexer/topics-inference-transparency-note',
         blurb:      'Inferred insights derived from transcribed audio, OCR content in visual text, and celebrities recognized in the video using the Video Indexer facial recognition model.'
+      },
+      ui: {
+        iconClass:  'bi-hash'
       }
     },
     {
@@ -161,6 +174,9 @@
       doc: {
         link:       'https://learn.microsoft.com/en-us/legal/azure-video-indexer/face-detection-transparency-note',
         blurb:      'Detects and aggregates similar faces in groups. The celebrities recognition module is then run to recognize celebrities.'
+      },
+      ui: {
+        iconClass:  'bi-person-circle'
       }
     },
     {
@@ -173,6 +189,9 @@
       doc: {
         link:       'https://learn.microsoft.com/en-us/legal/azure-video-indexer/labels-identification-transparency-note',
         blurb:      'Identifies visual objects like sunglasses or actions like swimming, appearing in the video footage of the media file.'
+      },
+      ui: {
+        iconClass:  'bi-tag'
       }
     },
     {
@@ -185,6 +204,9 @@
       doc: {
         link:       'https://learn.microsoft.com/en-us/legal/azure-video-indexer/named-entities-transparency-note',
         blurb:      'Uses Natural Language Processing to extract insights on the locations, people and brands appearing in audio and images in the media file. Named entities extraction is automatically used with Transcription and OCR and its insights are based on those extracted during these processes.'
+      },
+      ui: {
+        iconClass:  'bi-person-vcard'
       }
     }
   ]
