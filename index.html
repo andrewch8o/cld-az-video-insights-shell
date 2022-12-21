@@ -303,7 +303,7 @@
         false);       // don't keepScripts
       $('#insights-tabs').append(tabHdr);
 
-      const contentTmpl = $('#az-video-indexer-category-tabcontent-template').text();
+      const contentTmpl = $('#az-video-indexer-insight-template').text();
       const contentMarkup = $.mustache(contentTmpl, section);
       const tabContent = $.parseHTML(
         contentMarkup,// data - HTML produced from the template
@@ -421,7 +421,7 @@
   The template is designed to work with elements in the `__cld_video_indexer_sections_model` model,
   see the model docstring
 -->
-<noscript id="az-video-indexer-category-tabcontent-template" type="text/html">
+<noscript id="az-video-indexer-insight-template" type="text/html">
   <div id="{{uiBaseId}}-tabcontent" role="tabpanel" class="tab-pane {{cssState}}" 
     aria-labelledby="{{uiBaseId}}-tabhdr">
     <div class="accordion accordion-flush" id="{{uiBaseId}}-accordion">
