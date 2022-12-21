@@ -295,14 +295,6 @@
     expandModelFromInput(config);
 
     for (const section of config.model) {
-      const tabhdrTmpl = $('#az-video-indexer-category-tabheader-template').text();
-      const tabhdrMarkup = $.mustache(tabhdrTmpl, section);
-      const tabHdr = $.parseHTML(
-        tabhdrMarkup, // data - HTML produced from the template
-        document,     // context - default
-        false);       // don't keepScripts
-      $('#insights-tabs').append(tabHdr);
-
       const contentTmpl = $('#az-video-indexer-insight-template').text();
       const contentMarkup = $.mustache(contentTmpl, section);
       const tabContent = $.parseHTML(
