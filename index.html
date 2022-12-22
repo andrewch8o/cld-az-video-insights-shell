@@ -313,7 +313,7 @@
     });
     console.log('Done');
 
-    const contentTmpl = $('#az-video-indexer-insight-template').text();
+    const contentTmpl = $('#az-video-indexer-insights-template').text();
     const contentMarkup = $.mustache(contentTmpl, insights);
     const content = $.parseHTML(
       contentMarkup,// data - HTML produced from the template
@@ -458,7 +458,7 @@
      ]
   }
 -->
-<noscript id="az-video-indexer-insight-template" type="text/html">
+<noscript id="az-video-indexer-insights-template" type="text/html">
     <div class="accordion accordion-flush" id="insights-accordion">
       {{#.}}
       <div class="accordion-item">
