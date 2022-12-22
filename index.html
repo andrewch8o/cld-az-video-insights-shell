@@ -303,6 +303,16 @@
   function visualizeInsights(config) {
     const insights = parseInsights(config);
 
+    console.log('Sorting insights alphabetically...');
+    insights.sort((a,b) => {
+      const a_label = a.label.toUpperCase();
+      const b_label = b.label.toUpperCase();
+      if (a_label < b_label) return -1;
+      if (a_label > b_label) return 1;
+      return 0;
+    });
+    console.log('Done');
+
     const contentTmpl = $('#az-video-indexer-insight-template').text();
     const contentMarkup = $.mustache(contentTmpl, insights);
     const content = $.parseHTML(
