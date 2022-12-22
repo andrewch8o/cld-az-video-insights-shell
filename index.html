@@ -39,6 +39,28 @@
           <div class="nav nav-tabs" id="insights-tabs" role="tablist">
             <!-- Navigation tabs for each category of insights are dynamically created here -->
           </div>
+          <!-- Search input -->
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">
+                <i class="bi bi-search"></i>
+              </span>
+            </div>
+            <input type="text" class="form-control" aria-label="Text input with dropdown button">
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span>Insights</span>
+                <span><i class="bi bi-funnel"></i></span>
+              </button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <a class="dropdown-item" href="#">Something else here</a>
+                <div role="separator" class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Separated link</a>
+              </div>
+            </div>
+          </div>          
         </nav>
         <div class="tab-content" id="insights-content">
           <!-- Content areas for each category of insights are dynamically created here -->
