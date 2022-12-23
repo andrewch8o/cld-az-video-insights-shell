@@ -53,11 +53,10 @@
                   <span>Insights</span>
                   <span><i class="bi bi-funnel"></i></span>
                 </button>
-                <div class="dropdown-menu">
-                  <a class="dropdown-item" href="#">Action</a>
-                  <a class="dropdown-item" href="#">Another action</a>
-                  <a class="dropdown-item" href="#">Something else here</a>
-                  <a class="dropdown-item" href="#">Separated link</a>
+                <div class="dropdown-menu" id="insight-categories-filter-menu">
+                <!-- UI elements for each "insight category" are dynamically created here
+                     Used as display filters.
+                 -->
                 </div>
               </div>
             </div>
@@ -285,8 +284,8 @@
     });
     console.log('Done');
 
-    console.log('Enabling boostrap popovers');
-    $('[data-bs-toggle="popover"]').popover();
+    console.log('Generating insight category filters...');
+    generateInsightCategoryFilters(__cld_video_indexer_sections_model);
     console.log('Done');
 
     console.log('Enabling bootstrap tooltips');
@@ -304,6 +303,19 @@
     $('#searchbox').on('input', handleSearchBarInput);
     console.log('Done');
   });
+
+  /**
+   * Generates UI elelements for the "insight categories" from Video Indexer.
+   */
+  function generateInsightCategoryFilters(model) {
+    const contentTmpl = $('#az-video-indexer-category-filter-template').text();
+    const contentMarkup = $.mustache(contentTmpl, model);
+    const content = $.parseHTML(
+      contentMarkup,// data - HTML produced from the template
+      document,     // context - default
+      true);        // keepScripts to enable in-template JS event handlers
+    $('#insight-categories-filter-menu').append(content);
+  }
 
   /**
    * Implements basic search functionality.
@@ -461,27 +473,25 @@
 <!-- Mustache.JS templates
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 <!-- 
-  Categories are visualized using Bootstrap tabs.
-  https://getbootstrap.com/docs/5.0/components/navs-tabs/#tabs
+  Category filters. Each element renders as a Bootstrap menu item used to toggle on/off display
+  of all the insights from the category.
 
-  Each tab requires two elements in separate containers - tab header and tab content area.
-  This is tab header.
+  Input: Array[SectionModel]
 
   The template is designed to work with elements in the `__cld_video_indexer_sections_model` model,
   see the model docstring
 -->
-<noscript id="az-video-indexer-category-tabheader-template" type="text/html">
-  <button id="{{uiBaseId}}-tabhdr" class="nav-link nav-tab-narrow {{cssState}}" type="button" role="tab" 
-    data-bs-toggle="tab"
-    data-bs-target="#{{uiBaseId}}-tabcontent" 
-    aria-controls="{{uiBaseId}}-tabcontent" 
-    aria-selected="true">{{title}} 
+<noscript id="az-video-indexer-category-filter-template" type="text/html">
+  {{#.}}
+  <a class="dropdown-item" href="#">
+    <input class="form-check-input" type="checkbox" readonly />
+    <span>{{dataSelector}}</span>
     <span class="bi bi-question-circle tab-help-icon"
-      data-bs-toggle="popover"
-      data-bs-content="{{doc.blurb}}"
-      data-bs-placement="bottom">
+      data-bs-toggle="tooltip"
+      data-bs-content="{{doc.blurb}}">
     </span>
-  </button>
+  </a>
+  {{/.}}
 </noscript>
 
 <!-- 
