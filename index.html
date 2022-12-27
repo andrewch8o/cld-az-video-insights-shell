@@ -61,6 +61,7 @@
               </div>
             </div>
           </div>          
+          <div id="search-display-stats" class="text-sm-end text-muted"></div>
         </nav>
         <div class="tab-content" id="insights-content">
           <!-- UI elements for each insight are dynamically created here -->
@@ -257,6 +258,17 @@
    */
   function toggleInsightsCategory(categorySelector) {
     $(`div[vi-shell-category-selector='${categorySelector}']`).toggle();
+    updateSearchStats();
+  }
+
+  /**
+   * Updates search stats on the number of insights displayed after all
+   * the filters & search criteria had been applied.
+   */
+  function updateSearchStats() {
+    const visibleCategoriesCount = $("#insight-categories-filter-menu input[type='checkbox']:checked").length;
+    const visibleInsightsCount = $(".vi-insight-element:visible").length;
+    $('#search-display-stats').html(`<span>Displaying <b>${visibleInsightsCount}</b> insights from <b>${visibleCategoriesCount}</b> categories</span>`);
   }
 
   $(window).resize(() => {
@@ -310,6 +322,8 @@
     console.log('Configuring searchbox event handling');
     $('#searchbox').on('input', handleSearchBarInput);
     console.log('Done');
+
+    updateSearchStats();
   });
 
   /**
@@ -346,6 +360,7 @@
         jElement.addClass('search-display-off');
       }
     });
+    updateSearchStats();
     console.log('Done');
   }
 
