@@ -251,6 +251,14 @@
     }
   }
 
+  /**
+   * Used by category filters to toggle all the insight UI elements that
+   * are associated with the category on/off. 
+   */
+  function toggleInsightsCategory(categorySelector) {
+    $(`div[vi-shell-category-selector='${categorySelector}']`).toggle();
+  }
+
   $(window).resize(() => {
     ensureInsightsListUIHeight();
   });
@@ -430,7 +438,8 @@
         }
         insight.category = {
           iconClass : sectionModel.ui.iconClass,
-          tooltipLabel : sectionModel.title
+          tooltipLabel : sectionModel.title,
+          dataSelector : sectionModel.dataSelector
         };
         insight.timecodes = getInsightTimecodesModel(insightData.instances);
         result.push(insight);
@@ -484,8 +493,8 @@
 <noscript id="az-video-indexer-category-filter-template" type="text/html">
   {{#.}}
   <a class="dropdown-item" href="#">
-    <input class="form-check-input" type="checkbox" readonly />
-    <span><span class="bi {{ui.iconClass}}"></span> {{dataSelector}}</span>
+    <input class="form-check-input" type="checkbox" checked onclick="toggleInsightsCategory('{{dataSelector}}')" />
+    <span><span class="bi {{ui.iconClass}}"></span>{{dataSelector}}</span>
     <span class="bi bi-question-circle tab-help-icon"
       data-bs-toggle="tooltip"
       title="{{doc.blurb}}">
@@ -514,6 +523,7 @@
      category: {          (Object) -- Copies of values from section(category). Copies required due to Mustache scoping limitations.
        iconClass          (string) -- copy of iconClass from the insight section (category)
        tooltipLabel       (string) -- copy of title from the insight section (category)
+       dataSelector       (string) -- copy of dataSelector from the insight section (category)
      }    
      timecodes: [         (Array)  -- list of timecodes from entity instances reported by Video Indexer
          {
@@ -527,7 +537,8 @@
 <noscript id="az-video-indexer-insights-template" type="text/html">
     <div class="accordion accordion-flush" id="insights-accordion">
       {{#.}}
-      <div class="accordion-item vi-insight-element">
+      <div class="accordion-item vi-insight-element"
+        vi-shell-category-selector="{{category.dataSelector}}">
         <h2 class="accordion-header" id="{{collapse.hId}}" 
           onclick="ensureAccordionSectionStickyWhenExpanded(this.id); return false;">
           <button class="accordion-button collapsed" type="button" 
