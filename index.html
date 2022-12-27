@@ -485,10 +485,10 @@
   {{#.}}
   <a class="dropdown-item" href="#">
     <input class="form-check-input" type="checkbox" readonly />
-    <span>{{dataSelector}}</span>
+    <span><span class="bi {{ui.iconClass}}"></span> {{dataSelector}}</span>
     <span class="bi bi-question-circle tab-help-icon"
       data-bs-toggle="tooltip"
-      data-bs-content="{{doc.blurb}}">
+      title="{{doc.blurb}}">
     </span>
   </a>
   {{/.}}
