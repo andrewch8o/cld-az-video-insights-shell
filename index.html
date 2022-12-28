@@ -227,8 +227,9 @@
     const h_offset = parseInt(segm[0]) * 3600;
     const m_offset = parseInt(segm[1]) * 60;
     const s_offset = parseFloat(segm[2]);
+    const comp_offset = 0.001; // In some cases the video indexer offset is fraction of a second earlier
 
-    const offsetSeconds= Number(h_offset) + Number(m_offset) + Number(s_offset);
+    const offsetSeconds= Number(h_offset) + Number(m_offset) + Number(s_offset) + Number(comp_offset);
     console.log(`Setting video player current time [${timeOffsetLabel}] > [${offsetSeconds}]`);
     __cld_video_player.currentTime(offsetSeconds);
   }
