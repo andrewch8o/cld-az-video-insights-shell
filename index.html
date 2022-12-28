@@ -31,6 +31,7 @@
           id="cld-player" 
           controls
           muted
+          autoplay
           class="cld-video-player cld-video-player-skin-light"
           style="width:100%">
       </div>
@@ -230,8 +231,6 @@
     const offsetSeconds= Number(h_offset) + Number(m_offset) + Number(s_offset);
     console.log(`Setting video player current time [${timeOffsetLabel}] > [${offsetSeconds}]`);
     __cld_video_player.currentTime(offsetSeconds);
-    __cld_video_player.play();  // Using play-pause for the offset to take effect 
-    __cld_video_player.pause(); //   when used for the first time (otherwise player stays on the thumbnail)
   }
 
   /**
@@ -294,6 +293,14 @@
       cloud_name: cloud_name,
       bigPlayButton: 'init' });
     __cld_video_player.source(asset_pubid);
+    setTimeout(() => { 
+      // Setting player current time does not take effect if the video is not playing.
+      // As a solution:
+      //   - The player is loaded with autoplay
+      //   - The player is auto-paused
+      __cld_video_player.pause();
+      console.log('Auto-paused video player.');
+    }, 500);
     console.log('Done')
 
     console.log('Visualizing insights...');
