@@ -36,34 +36,29 @@
           style="width:100%">
       </div>
       <div class="col-6">
-        <nav>
-          <div class="nav nav-tabs" id="insights-tabs" role="tablist">
-            <!-- Navigation tabs for each category of insights are dynamically created here -->
+        <!-- Search input -->
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="bi bi-search"></i>
+            </span>
           </div>
-          <!-- Search input -->
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text">
-                <i class="bi bi-search"></i>
-              </span>
-            </div>
-            <input type="text" id="searchbox" class="form-control" aria-label="Text input with dropdown button">
-            <div class="input-group-append">
-              <div class="dropdown">
-                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <span>Insights</span>
-                  <span><i class="bi bi-funnel"></i></span>
-                </button>
-                <div class="dropdown-menu" id="insight-categories-filter-menu">
-                <!-- UI elements for each "insight category" are dynamically created here
-                     Used as display filters.
-                 -->
-                </div>
+          <input type="text" id="searchbox" class="form-control" aria-label="Text input with dropdown button">
+          <div class="input-group-append">
+            <div class="dropdown">
+              <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span>Insights</span>
+                <span><i class="bi bi-funnel"></i></span>
+              </button>
+              <div class="dropdown-menu" id="insight-categories-filter-menu">
+              <!-- UI elements for each "insight category" are dynamically created here
+                    Used as display filters.
+                -->
               </div>
             </div>
-          </div>          
-          <div id="search-display-stats" class="text-sm-end text-muted"></div>
-        </nav>
+          </div>
+        </div>          
+        <div id="search-display-stats" class="text-sm-end text-muted"></div>
         <div class="tab-content" id="insights-content">
           <!-- UI elements for each insight are dynamically created here -->
         </div>        
@@ -391,11 +386,11 @@
    * The function ensures that insights list always scrolls in view with video player side-by-side.
    */
   function ensureInsightsListUIHeight() {
-    viewportHeight = window.innerHeight;
-    tabsNav = $('#insights-tabs');
-    topOffset = tabsNav.offset().top + tabsNav.height();
-    maxHeight = viewportHeight - topOffset - 10;
-    $('#insights-content').css({"max-height": maxHeight, "overflow-y": "scroll"});
+    const viewportHeight = window.innerHeight;
+    const lastEl = $('#search-display-stats');
+    const topOffset = lastEl.offset().top + lastEl.height();
+    const maxHeight = viewportHeight - topOffset - 30;
+    $('#insights-content').css({"height": maxHeight, "overflow-y": "scroll"});
   }
 
   /**
