@@ -253,11 +253,48 @@
   }
 
   /**
+   * Implements basic search functionality.
+   * UI elements where insight label (case insensitive) does NOT contain the search term  
+   * are toggled hidden.
+   * 
+   * Adds 'search-display-on' / 'search-display-off' class to ui elements.
+   * These classes can be used to track count of elements that did / did not match search input.
+   */
+   function handleSearchBarInput(event) {
+    applySearch();
+    updateSearchStats();
+  }
+
+  function applySearch() {
+    const searchString = $('#searchbox').val().toLowerCase();
+    const uncheckedCategories = $('#insight-categories-filter-menu input:checkbox:not(:checked)')
+      .map((idx, el)=>{ return $(el).attr('vi-insight-category') });
+    $('.vi-insight-element').each((indx, element) => {
+      const jElement = $(element);
+      const insightCategory = jElement.attr('vi-shell-category-selector');
+      const categoryIsFiltered = $.inArray(insightCategory, uncheckedCategories) >= 0;
+      if (insightElementLabelContains(jElement, searchString) && !categoryIsFiltered) {
+        jElement.show();
+        jElement.addClass('search-display-on');
+      } else {
+        jElement.hide();
+        jElement.addClass('search-display-off');
+      }
+    });
+  }
+
+  function insightElementLabelContains(jElement, searchStringLowercase) {
+    const testVal = $('.vi-insight-label', jElement).text();
+    return testVal.toLowerCase().includes(searchStringLowercase);
+  }
+
+
+  /**
    * Used by category filters to toggle all the insight UI elements that
    * are associated with the category on/off. 
    */
   function toggleInsightsCategory(categorySelector) {
-    $(`div[vi-shell-category-selector='${categorySelector}']`).toggle();
+    applySearch();
     updateSearchStats();
   }
 
@@ -347,35 +384,6 @@
     $('#insight-categories-filter-menu').append(content);
   }
 
-  /**
-   * Implements basic search functionality.
-   * UI elements where insight label (case insensitive) does NOT contain the search term  
-   * are toggled hidden.
-   * 
-   * Adds 'search-display-on' / 'search-display-off' class to ui elements.
-   * These classes can be used to track count of elements that did / did not match search input.
-   */
-  function handleSearchBarInput(event) {
-    const label_search_val = $(this).val().toLowerCase();
-    console.log(`Filtering display by search string '${label_search_val}' on insight labels`);
-    $('.vi-insight-element').each((indx, element) => {
-      const jElement = $(element);
-      if (insightElementLabelContains(jElement, label_search_val)) {
-        jElement.show();
-        jElement.addClass('search-display-on');
-      } else {
-        jElement.hide();
-        jElement.addClass('search-display-off');
-      }
-    });
-    updateSearchStats();
-    console.log('Done');
-  }
-
-  function insightElementLabelContains(jElement, searchStringLowercase) {
-    const testVal = $('.vi-insight-label', jElement).text();
-    return testVal.toLowerCase().includes(searchStringLowercase);
-  }
 
   /**
    * List of insights can be long enough to require document scroll.
@@ -516,7 +524,7 @@
 <noscript id="az-video-indexer-category-filter-template" type="text/html">
   {{#.}}
   <a class="dropdown-item" href="#">
-    <input class="form-check-input" type="checkbox" checked onclick="toggleInsightsCategory('{{dataSelector}}')" />
+    <input class="form-check-input" type="checkbox" checked onclick="toggleInsightsCategory('{{dataSelector}}')" vi-insight-category="{{dataSelector}}" />
     <span><span class="bi {{ui.iconClass}}"></span>{{dataSelector}}</span>
     <span class="bi bi-question-circle tab-help-icon"
       data-bs-toggle="tooltip"
