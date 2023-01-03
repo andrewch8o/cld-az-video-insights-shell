@@ -31,17 +31,36 @@
           id="cld-player" 
           controls
           muted
-          class="cld-video-player"
+          autoplay
+          class="cld-video-player cld-video-player-skin-light"
           style="width:100%">
       </div>
       <div class="col-6">
-        <nav>
-          <div class="nav nav-tabs" id="insights-tabs" role="tablist">
-            <!-- Navigation tabs for each category of insights are dynamically created here -->
+        <!-- Search input -->
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="bi bi-search"></i>
+            </span>
           </div>
-        </nav>
+          <input type="text" id="searchbox" class="form-control" aria-label="Text input with dropdown button">
+          <div class="input-group-append">
+            <div class="dropdown">
+              <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span>Insights</span>
+                <span><i class="bi bi-funnel"></i></span>
+              </button>
+              <div class="dropdown-menu" id="insight-categories-filter-menu">
+              <!-- UI elements for each "insight category" are dynamically created here
+                    Used as display filters.
+                -->
+              </div>
+            </div>
+          </div>
+        </div>          
+        <div id="search-display-stats" class="text-sm-end text-muted"></div>
         <div class="tab-content" id="insights-content">
-          <!-- Content areas for each category of insights are dynamically created here -->
+          <!-- UI elements for each insight are dynamically created here -->
         </div>        
       </div>
     </div>
@@ -83,8 +102,6 @@
    *  title,            (string) -- title to be used for the tab header
    *  cssState,         (string) -- 'active' (if tab should be selected when rendered). 
    *                                "Falsy" otherwise
-   *  insights,         (Array)  -- used to build UI model from the Azure Video Indexer JSON
-   *                                Created dynamically during execution from Video Indexer JSON
    *  dataToModelConf { (Object) -- configuration used when transforming Video Indexer JSON to UI model
    *    labelField                  (string) -- which field value to use as the label for the insight in the UI
    *  },
@@ -93,24 +110,10 @@
    *    link,           (string) -- link to doc article
    *    blurb           (string) -- blurb from documentation 
    *  }
-   * }
    * 
-   * Insights
-   * Each insight model is expected to have the following structure
-   * {
-   *    label,               (string) -- display label for the insight in the UI
-   *    confLabel,           (string) -- label for the confidence level reported by AI 
-   *    collapse {           (Object) -- configuration for the collapse section in accordion UI
-   *      hId,               (string) -- collapse section header id
-   *      sId,               (string) -- collapse section body id
-   *    },    
-   *    timecodes: [         (Array)  -- list of timecodes from entity instances reported by Video Indexer
-   *        {
-   *           rawVal,       (string) -- time code raw value, preserves fraction of a second (to be passed to player)
-   *           displayVal,   (string) -- to be used as display value for time code (for consistent display)
-   *           label         (string) -- additional information for time code to be displayed in UI
-   *        }
-   *    ]
+   *  ui: {             (Object) -- UI representation config
+   *    iconClass       (string) -- Bootstrap icon class to represent the section on insight UI elements
+   *  }
    * }
    */
   __cld_video_indexer_sections_model = [
@@ -125,6 +128,9 @@
       doc: {
         link:       'https://learn.microsoft.com/en-us/legal/azure-video-indexer/ocr-transparency-note',
         blurb:      'Text from images like pictures, street signs and products.'
+      },
+      ui: {
+        iconClass:  'bi-fonts'
       }
     },
     {
@@ -137,6 +143,9 @@
       doc: {
         link:       'https://learn.microsoft.com/en-us/legal/azure-video-indexer/keywords-transparency-note',
         blurb:      'Keywords discussed in the media file.'
+      },
+      ui: {
+        iconClass:  'bi-key'
       }
     },
     {
@@ -149,6 +158,9 @@
       doc: {
         link:       'https://learn.microsoft.com/en-us/legal/azure-video-indexer/topics-inference-transparency-note',
         blurb:      'Inferred insights derived from transcribed audio, OCR content in visual text, and celebrities recognized in the video using the Video Indexer facial recognition model.'
+      },
+      ui: {
+        iconClass:  'bi-hash'
       }
     },
     {
@@ -161,6 +173,9 @@
       doc: {
         link:       'https://learn.microsoft.com/en-us/legal/azure-video-indexer/face-detection-transparency-note',
         blurb:      'Detects and aggregates similar faces in groups. The celebrities recognition module is then run to recognize celebrities.'
+      },
+      ui: {
+        iconClass:  'bi-person-circle'
       }
     },
     {
@@ -173,6 +188,9 @@
       doc: {
         link:       'https://learn.microsoft.com/en-us/legal/azure-video-indexer/labels-identification-transparency-note',
         blurb:      'Identifies visual objects like sunglasses or actions like swimming, appearing in the video footage of the media file.'
+      },
+      ui: {
+        iconClass:  'bi-tag'
       }
     },
     {
@@ -185,6 +203,9 @@
       doc: {
         link:       'https://learn.microsoft.com/en-us/legal/azure-video-indexer/named-entities-transparency-note',
         blurb:      'Uses Natural Language Processing to extract insights on the locations, people and brands appearing in audio and images in the media file. Named entities extraction is automatically used with Transcription and OCR and its insights are based on those extracted during these processes.'
+      },
+      ui: {
+        iconClass:  'bi-person-vcard'
       }
     }
   ]
@@ -201,12 +222,11 @@
     const h_offset = parseInt(segm[0]) * 3600;
     const m_offset = parseInt(segm[1]) * 60;
     const s_offset = parseFloat(segm[2]);
+    const comp_offset = 0.001; // In some cases the video indexer offset is fraction of a second earlier
 
-    const offsetSeconds= Number(h_offset) + Number(m_offset) + Number(s_offset);
+    const offsetSeconds= Number(h_offset) + Number(m_offset) + Number(s_offset) + Number(comp_offset);
     console.log(`Setting video player current time [${timeOffsetLabel}] > [${offsetSeconds}]`);
     __cld_video_player.currentTime(offsetSeconds);
-    __cld_video_player.play();  // Using play-pause for the offset to take effect 
-    __cld_video_player.pause(); //   when used for the first time (otherwise player stays on the thumbnail)
   }
 
   /**
@@ -225,6 +245,62 @@
     } else {
       accordionSectionHdr.removeClass('sticky');
     }
+  }
+
+  /**
+   * Implements basic search functionality.
+   * UI elements where insight label (case insensitive) does NOT contain the search term  
+   * are toggled hidden.
+   * 
+   * Adds 'search-display-on' / 'search-display-off' class to ui elements.
+   * These classes can be used to track count of elements that did / did not match search input.
+   */
+   function handleSearchBarInput(event) {
+    applySearch();
+    updateSearchStats();
+  }
+
+  function applySearch() {
+    const searchString = $('#searchbox').val().toLowerCase();
+    const uncheckedCategories = $('#insight-categories-filter-menu input:checkbox:not(:checked)')
+      .map((idx, el)=>{ return $(el).attr('vi-insight-category') });
+    $('.vi-insight-element').each((indx, element) => {
+      const jElement = $(element);
+      const insightCategory = jElement.attr('vi-shell-category-selector');
+      const categoryIsFiltered = $.inArray(insightCategory, uncheckedCategories) >= 0;
+      if (insightElementLabelContains(jElement, searchString) && !categoryIsFiltered) {
+        jElement.show();
+        jElement.addClass('search-display-on');
+      } else {
+        jElement.hide();
+        jElement.addClass('search-display-off');
+      }
+    });
+  }
+
+  function insightElementLabelContains(jElement, searchStringLowercase) {
+    const testVal = $('.vi-insight-label', jElement).text();
+    return testVal.toLowerCase().includes(searchStringLowercase);
+  }
+
+
+  /**
+   * Used by category filters to toggle all the insight UI elements that
+   * are associated with the category on/off. 
+   */
+  function toggleInsightsCategory(categorySelector) {
+    applySearch();
+    updateSearchStats();
+  }
+
+  /**
+   * Updates search stats on the number of insights displayed after all
+   * the filters & search criteria had been applied.
+   */
+  function updateSearchStats() {
+    const visibleCategoriesCount = $("#insight-categories-filter-menu input[type='checkbox']:checked").length;
+    const visibleInsightsCount = $(".vi-insight-element:visible").length;
+    $('#search-display-stats').html(`<span>Displaying <b>${visibleInsightsCount}</b> insights from <b>${visibleCategoriesCount}</b> categories</span>`);
   }
 
   $(window).resize(() => {
@@ -250,6 +326,14 @@
       cloud_name: cloud_name,
       bigPlayButton: 'init' });
     __cld_video_player.source(asset_pubid);
+    setTimeout(() => { 
+      // Setting player current time does not take effect if the video is not playing.
+      // As a solution:
+      //   - The player is loaded with autoplay
+      //   - The player is auto-paused
+      __cld_video_player.pause();
+      console.log('Auto-paused video player.');
+    }, 500);
     console.log('Done')
 
     console.log('Visualizing insights...');
@@ -260,14 +344,41 @@
     });
     console.log('Done');
 
-    console.log('Enabling boostrap popovers');
-    $('[data-bs-toggle="popover"]').popover();
+    console.log('Generating insight category filters...');
+    generateInsightCategoryFilters(__cld_video_indexer_sections_model);
+    console.log('Done');
+
+    console.log('Enabling bootstrap tooltips');
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
     console.log('Done');
 
     console.log('Adjusting height for the insights list area');
     ensureInsightsListUIHeight();
     console.log('Done');
+
+    console.log('Configuring searchbox event handling');
+    $('#searchbox').on('input', handleSearchBarInput);
+    console.log('Done');
+
+    updateSearchStats();
   });
+
+  /**
+   * Generates UI elelements for the "insight categories" from Video Indexer.
+   */
+  function generateInsightCategoryFilters(model) {
+    const contentTmpl = $('#az-video-indexer-category-filter-template').text();
+    const contentMarkup = $.mustache(contentTmpl, model);
+    const content = $.parseHTML(
+      contentMarkup,// data - HTML produced from the template
+      document,     // context - default
+      true);        // keepScripts to enable in-template JS event handlers
+    $('#insight-categories-filter-menu').append(content);
+  }
+
 
   /**
    * List of insights can be long enough to require document scroll.
@@ -275,11 +386,11 @@
    * The function ensures that insights list always scrolls in view with video player side-by-side.
    */
   function ensureInsightsListUIHeight() {
-    viewportHeight = window.innerHeight;
-    tabsNav = $('#insights-tabs');
-    topOffset = tabsNav.offset().top + tabsNav.height();
-    maxHeight = viewportHeight - topOffset - 10;
-    $('#insights-content').css({"max-height": maxHeight, "overflow-y": "scroll"});
+    const viewportHeight = window.innerHeight;
+    const lastEl = $('#search-display-stats');
+    const topOffset = lastEl.offset().top + lastEl.height();
+    const maxHeight = viewportHeight - topOffset - 30;
+    $('#insights-content').css({"height": maxHeight, "overflow-y": "scroll"});
   }
 
   /**
@@ -292,25 +403,25 @@
    * 
    */
   function visualizeInsights(config) {
-    expandModelFromInput(config);
+    const insights = parseInsights(config);
 
-    for (const section of config.model) {
-      const tabhdrTmpl = $('#az-video-indexer-category-tabheader-template').text();
-      const tabhdrMarkup = $.mustache(tabhdrTmpl, section);
-      const tabHdr = $.parseHTML(
-        tabhdrMarkup, // data - HTML produced from the template
-        document,     // context - default
-        false);       // don't keepScripts
-      $('#insights-tabs').append(tabHdr);
+    console.log('Sorting insights alphabetically...');
+    insights.sort((a,b) => {
+      const a_label = a.label.toUpperCase();
+      const b_label = b.label.toUpperCase();
+      if (a_label < b_label) return -1;
+      if (a_label > b_label) return 1;
+      return 0;
+    });
+    console.log('Done');
 
-      const contentTmpl = $('#az-video-indexer-category-tabcontent-template').text();
-      const contentMarkup = $.mustache(contentTmpl, section);
-      const tabContent = $.parseHTML(
-        contentMarkup,// data - HTML produced from the template
-        document,     // context - default
-        true);        // keepScripts to enable in-template JS event handlers
-      $('#insights-content').append(tabContent);
-    }
+    const contentTmpl = $('#az-video-indexer-insights-template').text();
+    const contentMarkup = $.mustache(contentTmpl, insights);
+    const content = $.parseHTML(
+      contentMarkup,// data - HTML produced from the template
+      document,     // context - default
+      true);        // keepScripts to enable in-template JS event handlers
+    $('#insights-content').append(content);
   }
 
   /**
@@ -318,11 +429,13 @@
    * 
    * config - see the visualizeInsights docstring
    */
-  function expandModelFromInput(config) {
+  function parseInsights(config) {
+    let result = [];
     for (const sectionModel of config.model) {
       const sectionData = config.input[sectionModel.dataSelector];
-      sectionModel.insights = getInsightsModel(sectionModel, sectionData);
+      result = result.concat(getInsightsModel(sectionModel, sectionData));
     }
+    return result;
   }
 
   /**
@@ -349,6 +462,11 @@
           hId : `${sectionModel.uiBaseId}-chdr-${index}`,
           sId : `${sectionModel.uiBaseId}-csec-${index}`
         }
+        insight.category = {
+          iconClass : sectionModel.ui.iconClass,
+          tooltipLabel : sectionModel.title,
+          dataSelector : sectionModel.dataSelector
+        };
         insight.timecodes = getInsightTimecodesModel(insightData.instances);
         result.push(insight);
         index += 1;
@@ -390,27 +508,25 @@
 <!-- Mustache.JS templates
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 <!-- 
-  Categories are visualized using Bootstrap tabs.
-  https://getbootstrap.com/docs/5.0/components/navs-tabs/#tabs
+  Category filters. Each element renders as a Bootstrap menu item used to toggle on/off display
+  of all the insights from the category.
 
-  Each tab requires two elements in separate containers - tab header and tab content area.
-  This is tab header.
+  Input: Array[SectionModel]
 
   The template is designed to work with elements in the `__cld_video_indexer_sections_model` model,
   see the model docstring
 -->
-<noscript id="az-video-indexer-category-tabheader-template" type="text/html">
-  <button id="{{uiBaseId}}-tabhdr" class="nav-link nav-tab-narrow {{cssState}}" type="button" role="tab" 
-    data-bs-toggle="tab"
-    data-bs-target="#{{uiBaseId}}-tabcontent" 
-    aria-controls="{{uiBaseId}}-tabcontent" 
-    aria-selected="true">{{title}} 
+<noscript id="az-video-indexer-category-filter-template" type="text/html">
+  {{#.}}
+  <a class="dropdown-item" href="#">
+    <input class="form-check-input" type="checkbox" checked onclick="toggleInsightsCategory('{{dataSelector}}')" vi-insight-category="{{dataSelector}}" />
+    <span><span class="bi {{ui.iconClass}}"></span>{{dataSelector}}</span>
     <span class="bi bi-question-circle tab-help-icon"
-      data-bs-toggle="popover"
-      data-bs-content="{{doc.blurb}}"
-      data-bs-placement="bottom">
+      data-bs-toggle="tooltip"
+      title="{{doc.blurb}}">
     </span>
-  </button>
+  </a>
+  {{/.}}
 </noscript>
 
 <!-- 
@@ -418,15 +534,37 @@
   Each tab requires two elements in separate containers - tab header and tab content area.
   This is tab content area.
 
-  The template is designed to work with elements in the `__cld_video_indexer_sections_model` model,
-  see the model docstring
+  The template is designed to work with the following model:
+
+  Input: Array[Insight]
+
+  Each Insight model is expected to have the following structure
+  {
+     label,               (string) -- display label for the insight in the UI
+     confLabel,           (string) -- label for the confidence level reported by AI 
+     collapse {           (Object) -- configuration for the collapse section in accordion UI
+       hId,               (string) -- collapse section header id
+       sId,               (string) -- collapse section body id
+     },
+     category: {          (Object) -- Copies of values from section(category). Copies required due to Mustache scoping limitations.
+       iconClass          (string) -- copy of iconClass from the insight section (category)
+       tooltipLabel       (string) -- copy of title from the insight section (category)
+       dataSelector       (string) -- copy of dataSelector from the insight section (category)
+     }    
+     timecodes: [         (Array)  -- list of timecodes from entity instances reported by Video Indexer
+         {
+            rawVal,       (string) -- time code raw value, preserves fraction of a second (to be passed to player)
+            displayVal,   (string) -- to be used as display value for time code (for consistent display)
+            label         (string) -- additional information for time code to be displayed in UI
+         }
+     ]
+  }
 -->
-<noscript id="az-video-indexer-category-tabcontent-template" type="text/html">
-  <div id="{{uiBaseId}}-tabcontent" role="tabpanel" class="tab-pane {{cssState}}" 
-    aria-labelledby="{{uiBaseId}}-tabhdr">
-    <div class="accordion accordion-flush" id="{{uiBaseId}}-accordion">
-      {{#insights}}
-      <div class="accordion-item">
+<noscript id="az-video-indexer-insights-template" type="text/html">
+    <div class="accordion accordion-flush" id="insights-accordion">
+      {{#.}}
+      <div class="accordion-item vi-insight-element"
+        vi-shell-category-selector="{{category.dataSelector}}">
         <h2 class="accordion-header" id="{{collapse.hId}}" 
           onclick="ensureAccordionSectionStickyWhenExpanded(this.id); return false;">
           <button class="accordion-button collapsed" type="button" 
@@ -436,7 +574,10 @@
             aria-controls="{{collapse.sId}}">
             <div class="container">
               <div class="row">
-                <div class="col-9">{{label}}</div>
+                <div class="col-8 vi-insight-label">{{label}}</div>
+                <div class="col-1 bi {{category.iconClass}}"
+                  data-bs-toggle="tooltip"
+                  title="{{category.tooltipLabel}}"></div>
                 <div class="col-3">{{confLabel}}</div>
               </div>
             </div>
@@ -444,7 +585,7 @@
         </h2>
         <div id="{{collapse.sId}}" class="accordion-collapse collapse" 
           aria-labelledby="{{collapse.hId}}" 
-          data-bs-parent="#{{uiBaseId}}-accordion">
+          data-bs-parent="#insights-accordion">
           <div class="accordion-body">
             <div class="container">
             {{#timecodes}}
@@ -461,9 +602,8 @@
           </div>
         </div>
       </div>
-      {{/insights}}
+      {{/.}}
     </div>
-  </div>
 </noscript>
 
 </body>
