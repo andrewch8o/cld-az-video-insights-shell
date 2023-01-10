@@ -450,6 +450,10 @@
       const result = [];
       const labelFld = sectionModel.dataToModelConf.labelField;
       let index = 0;
+      if (!sectionData) {
+        // return empty result if section data not found
+        return result;
+      }
       for (const insightData of sectionData) {
         const insight = {};
         insight.label = insightData[labelFld];
